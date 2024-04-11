@@ -32,6 +32,7 @@ const configuration = {
   ZENDESK_LOGO_URL: process.env.ZENDESK_LOGO_URL,
   ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID || '',
   ALGOLIA_SEARCH_API_KEY: process.env.ALGOLIA_SEARCH_API_KEY || '',
+  AC_INSTANCE_CONFIG_API_URL: process.env.AC_INSTANCE_CONFIG_API_URL || null,
 };
 
 export default configuration;

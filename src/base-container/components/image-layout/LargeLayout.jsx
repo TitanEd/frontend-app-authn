@@ -4,11 +4,15 @@ import { getConfig } from '@edx/frontend-platform';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { Hyperlink, Image } from '@edx/paragon';
 
+import DefaultLogo from '../../../assets/NavLogo-placeholder.svg';
+import useGetConfig from '../../../data/useGetConfig';
+
 import './index.scss';
 import messages from './messages';
 
 const LargeLayout = () => {
   const { formatMessage } = useIntl();
+  const { headerLogo } = useGetConfig();
 
   return (
     <div
@@ -16,7 +20,7 @@ const LargeLayout = () => {
       style={{ backgroundImage: `url(${getConfig().BANNER_IMAGE_LARGE})` }}
     >
       <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
-        <Image className="company-logo position-absolute" alt={getConfig().SITE_NAME} src={getConfig().LOGO_WHITE_URL} />
+        <Image className="company-logo position-absolute" alt={getConfig().SITE_NAME} src={headerLogo || DefaultLogo} />
       </Hyperlink>
       <div className="min-vh-100 p-5 d-flex align-items-end">
         <h1 className="display-2 mw-sm mb-3 d-flex flex-column flex-shrink-0 justify-content-center">

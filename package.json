@@ -67,7 +67,8 @@
     "redux-thunk": "2.4.2",
     "regenerator-runtime": "0.14.0",
     "reselect": "4.1.8",
-    "universal-cookie": "4.0.4"
+    "universal-cookie": "4.0.4",
+    "react-query": "^3.39.3"
   },
   "devDependencies": {
     "@edx/browserslist-config": "^1.1.1",
