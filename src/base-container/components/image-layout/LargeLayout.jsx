@@ -4,7 +4,7 @@ import { getConfig } from '@edx/frontend-platform';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { Hyperlink, Image } from '@edx/paragon';
 
-import DefaultLogo from '../../../assets/NavLogo-placeholder.svg';
+import DefaultLogo from '../../../assets/NavLogo-placeholder.png';
 import useGetConfig from '../../../data/useGetConfig';
 
 import './index.scss';
