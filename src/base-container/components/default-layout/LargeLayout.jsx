@@ -6,18 +6,18 @@ import { Hyperlink, Image } from '@edx/paragon';
 import classNames from 'classnames';
 
 import DefaultLogo from '../../../assets/NavLogo-placeholder.png';
-import useGetConfig from '../../../data/useGetConfig';
+import getSiteLogo from '../../../data/useSiteConfig.js';
 
 import messages from './messages';
 
 const LargeLayout = () => {
   const { formatMessage } = useIntl();
-  const { headerLogo } = useGetConfig();
+  const { headerLogo, siteName, favicon, loading, isError } = useSiteConfig();
   return (
     <div className="w-50 d-flex">
       <div className="col-md-9 bg-primary-400">
         <Hyperlink destination={getConfig().MARKETING_SITE_BASE_URL}>
-          <Image className="logo position-absolute" alt={getConfig().SITE_NAME} src={headerLogo || DefaultLogo} />
+          <Image className="logo position-absolute" alt={siteName} src={headerLogo} />
         </Hyperlink>
         <div className="min-vh-100 d-flex align-items-center">
           <div className={classNames({ 'large-yellow-line mr-n4.5': getConfig().SITE_NAME === 'edX' })} />
@@ -29,7 +29,7 @@ const LargeLayout = () => {
           >
             {formatMessage(messages['start.learning'])}
             <div className="text-accent-a">
-              {formatMessage(messages['with.site.name'], { siteName: getConfig().SITE_NAME })}
+              {formatMessage(messages['with.site.name'], { siteName: siteName })}
             </div>
           </h1>
         </div>
