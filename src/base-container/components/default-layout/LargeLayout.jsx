@@ -6,7 +6,7 @@ import { Hyperlink, Image } from '@edx/paragon';
 import classNames from 'classnames';
 
 import DefaultLogo from '../../../assets/NavLogo-placeholder.png';
-import getSiteLogo from '../../../data/useSiteConfig.js';
+import useSiteConfig from '../../../data/useSiteConfig.js';
 
 import messages from './messages';
 
