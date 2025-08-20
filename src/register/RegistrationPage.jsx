@@ -374,13 +374,15 @@ const RegistrationPage = (props) => {
                 onMouseDown={(e) => e.preventDefault()}
               />
               {!registrationEmbedded && (
-                <ThirdPartyAuth
-                  currentProvider={currentProvider}
-                  providers={providers}
-                  secondaryProviders={secondaryProviders}
-                  handleInstitutionLogin={handleInstitutionLogin}
-                  thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
-                />
+                <div className="registration-social-login-section">
+                  <ThirdPartyAuth
+                    currentProvider={currentProvider}
+                    providers={providers}
+                    secondaryProviders={secondaryProviders}
+                    handleInstitutionLogin={handleInstitutionLogin}
+                    thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
+                  />
+                </div>
               )}
             </Form>
           </div>

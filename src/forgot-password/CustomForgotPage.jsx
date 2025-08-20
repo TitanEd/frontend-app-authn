@@ -12,7 +12,7 @@ import {
   Tab,
   Tabs,
 } from '@openedx/paragon';
-import { ChevronLeft } from '@openedx/paragon/icons';
+import { ArrowBack, KeyboardBackspace } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
@@ -21,13 +21,11 @@ import { forgotPassword, setForgotPasswordFormData } from './data/actions';
 import { forgotPasswordResultSelector } from './data/selectors';
 import ForgotPasswordAlert from './ForgotPasswordAlert';
 import messages from './messages';
-import BaseContainer from '../base-container';
 import { FormGroup } from '../common-components';
 import { DEFAULT_STATE, LOGIN_PAGE, VALID_EMAIL_REGEX } from '../data/constants';
 import { updatePathWithQueryParams, windowScrollTo } from '../data/utils';
-import { PluginSlot } from '@openedx/frontend-plugin-framework';
 
-const ForgotPasswordPage = (props) => {
+const CustomForgotPage = (props) => {
   const platformName = getConfig().SITE_NAME;
   const emailRegex = new RegExp(VALID_EMAIL_REGEX, 'i');
   const {
@@ -90,94 +88,94 @@ const ForgotPasswordPage = (props) => {
 
   const tabTitle = (
     <div className="d-inline-flex flex-wrap align-items-center">
-      <Icon src={ChevronLeft} />
+      <Icon src={KeyboardBackspace} />
       <span className="ml-2">{formatMessage(messages['sign.in.text'])}</span>
     </div>
   );
 
   return (
-      <PluginSlot
-        id="forgot_password_plugin_slot"
-        pluginProps={{
-          email,
-          emailValidationError,
-          status,
-          submitState,
-          forgotPassword: props.forgotPassword,
-          setForgotPasswordFormData: props.setForgotPasswordFormData,
-        }}
-      >
-    <BaseContainer>
-        <Helmet>
-          <title>{formatMessage(messages['forgot.password.page.title'],
-            { siteName: getConfig().SITE_NAME })}
-          </title>
-        </Helmet>
-        <div>
-          <Tabs activeKey="" id="controlled-tab" onSelect={(key) => navigate(updatePathWithQueryParams(key))}>
-            <Tab title={tabTitle} eventKey={LOGIN_PAGE} />
-          </Tabs>
-          <div id="main-content" className="main-content">
-            <Form id="forget-password-form" name="forget-password-form" className="mw-xs">
-              <ForgotPasswordAlert email={bannerEmail} emailError={formErrors} status={status} />
-              <h2 className="h4">
-                {formatMessage(messages['forgot.password.page.heading'])}
-              </h2>
-              <p className="mb-4">
-                {formatMessage(messages['forgot.password.page.instructions'])}
-              </p>
-              <FormGroup
-                floatingLabel={formatMessage(messages['forgot.password.page.email.field.label'])}
-                name="email"
-                value={email}
-                autoComplete="on"
-                errorMessage={validationError}
-                handleChange={(e) => setEmail(e.target.value)}
-                handleBlur={handleBlur}
-                handleFocus={handleFocus}
-                helpText={[formatMessage(messages['forgot.password.email.help.text'], { platformName })]}
-              />
-              <StatefulButton
-                id="submit-forget-password"
-                name="submit-forget-password"
-                type="submit"
-                variant="brand"
-                className="forgot-password--button"
-                state={submitState}
-                labels={{
-                  default: formatMessage(messages['forgot.password.page.submit.button']),
-                  pending: '',
-                }}
-                onClick={handleSubmit}
-                onMouseDown={(e) => e.preventDefault()}
-              />
-              {(getConfig().LOGIN_ISSUE_SUPPORT_LINK) && (
+    <div className="custom-forgot-password-container">
+      <Helmet>
+        <title>{formatMessage(messages['forgot.password.page.title'],
+          { siteName: getConfig().SITE_NAME })}
+        </title>
+      </Helmet>
+      <div className="forgot-password-form-wrapper">
+        <div className="forgot-password-form-container">
+          {/* Back Button */}
+          <div className="back-button-container">
+            <button 
+              type="button" 
+              className="back-button"
+              onClick={() => navigate(updatePathWithQueryParams(LOGIN_PAGE))}
+            >
+              <Icon src={ArrowBack} />
+            </button>
+          </div>
+          
+          {/* Main Form */}
+          <Form id="forget-password-form" name="forget-password-form" className="forgot-password-form">
+            <ForgotPasswordAlert email={bannerEmail} emailError={formErrors} status={status} />
+            <h2 className="forgot-password-title">
+              Forgot Password?
+            </h2>
+            <p className="forgot-password-instructions">
+              Please enter your email address below and we will send you an email with instructions on how to reset your password.
+            </p>
+            <FormGroup
+              floatingLabel="Registered Email"
+              name="email"
+              value={email}
+              autoComplete="on"
+              errorMessage={validationError}
+              handleChange={(e) => setEmail(e.target.value)}
+              handleBlur={handleBlur}
+              handleFocus={handleFocus}
+              helpText={[formatMessage(messages['forgot.password.email.help.text'], { platformName })]}
+            />
+            <StatefulButton
+              id="submit-forget-password"
+              name="submit-forget-password"
+              type="submit"
+              variant="brand"
+              className="forgot-password--button"
+              state={submitState}
+              labels={{
+                default: "Submit",
+                pending: '',
+              }}
+              onClick={handleSubmit}
+              onMouseDown={(e) => e.preventDefault()}
+            />
+            {(getConfig().LOGIN_ISSUE_SUPPORT_LINK) && (
+              <div className="help-section">
+                <span className="help-text">Having Trouble? </span>
                 <Hyperlink
                   id="forgot-password"
                   name="forgot-password"
-                  className="ml-4 font-weight-500 text-body"
+                  className="help-link"
                   destination={getConfig().LOGIN_ISSUE_SUPPORT_LINK}
                   target="_blank"
                   showLaunchIcon={false}
                 >
-                  {formatMessage(messages['need.help.sign.in.text'])}
+                  Get Help
                 </Hyperlink>
-              )}
-              <p className="mt-5.5 small text-gray-700">
-                {formatMessage(messages['additional.help.text'], { platformName })}
-                <span>
-                  <Hyperlink isInline destination={`mailto:${getConfig().INFO_EMAIL}`}>{getConfig().INFO_EMAIL}</Hyperlink>
-                </span>
-              </p>
-            </Form>
-          </div>
+              </div>
+            )}
+            <p className="support-info">
+              {formatMessage(messages['additional.help.text'], { platformName })}
+              <span>
+                <Hyperlink isInline destination={`mailto:${getConfig().INFO_EMAIL}`}>{getConfig().INFO_EMAIL}</Hyperlink>
+              </span>
+            </p>
+          </Form>
         </div>
-    </BaseContainer>
-      </PluginSlot>
+      </div>
+    </div>
   );
 };
 
-ForgotPasswordPage.propTypes = {
+CustomForgotPage.propTypes = {
   email: PropTypes.string,
   emailValidationError: PropTypes.string,
   forgotPassword: PropTypes.func.isRequired,
@@ -186,7 +184,7 @@ ForgotPasswordPage.propTypes = {
   submitState: PropTypes.string,
 };
 
-ForgotPasswordPage.defaultProps = {
+CustomForgotPage.defaultProps = {
   email: '',
   emailValidationError: '',
   status: null,
@@ -199,4 +197,4 @@ export default connect(
     forgotPassword,
     setForgotPasswordFormData,
   },
-)(ForgotPasswordPage);
+)(CustomForgotPage);

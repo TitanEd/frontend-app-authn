@@ -1,0 +1,12 @@
+.btn-brand {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-white) !important;
+    border-radius: 8px;
+
+    &:hover {
+        background-color: var(--primary-light) !important;
+        border-color: var(--primary-light) !important;
+        color: var(--primary) !important;
+    }
+}
