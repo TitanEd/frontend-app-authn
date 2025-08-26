@@ -6,45 +6,47 @@ import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics'
 import { getAuthService } from '@edx/frontend-platform/auth';
 import { injectIntl, useIntl } from '@edx/frontend-platform/i18n';
 import {
-  Icon,
-  Tab,
-  Tabs,
   Button,
   Form,
+  Icon,
   StatefulButton,
+  Tab,
+  Tabs,
 } from '@openedx/paragon';
 import PropTypes from 'prop-types';
-import { Navigate, useNavigate, Link } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
-import { clearThirdPartyAuthContextErrorMessage } from '../common-components/data/actions';
+import { FormGroup, PasswordField, RedirectLogistration } from '../common-components';
+import { clearThirdPartyAuthContextErrorMessage, getThirdPartyAuthContext } from '../common-components/data/actions';
 import {
+  thirdPartyAuthContextSelector,
   tpaProvidersSelector,
 } from '../common-components/data/selectors';
 import messages from '../common-components/messages';
-import { LOGIN_PAGE, REGISTER_PAGE, RESET_PAGE } from '../data/constants';
-import {
-  getTpaHint, getTpaProvider, updatePathWithQueryParams, getAllPossibleQueryParams,
-} from '../data/utils';
-import { backupLoginForm, loginRequest, backupLoginFormBegin, dismissPasswordResetBanner } from '../login/data/actions';
-import { INVALID_FORM, TPA_AUTHENTICATION_FAILURE } from '../login/data/constants';
-import { DEFAULT_STATE, PENDING_STATE } from '../data/constants';
-import { getThirdPartyAuthContext } from '../common-components/data/actions';
-import { thirdPartyAuthContextSelector } from '../common-components/data/selectors';
-import { RegistrationPage } from '../register';
-import { backupRegistrationForm } from '../register/data/actions';
-import { getActivationStatus } from '../data/utils';
-import AccountActivationMessage from '../login/AccountActivationMessage';
-import LoginFailureMessage from '../login/LoginFailure';
-import ResetPasswordSuccess from '../reset-password/ResetPasswordSuccess';
 import ThirdPartyAuth from '../common-components/ThirdPartyAuth';
 import ThirdPartyAuthAlert from '../common-components/ThirdPartyAuthAlert';
-import { FormGroup, PasswordField, RedirectLogistration } from '../common-components';
+import {
+  DEFAULT_STATE, LOGIN_PAGE, PENDING_STATE, REGISTER_PAGE, RESET_PAGE,
+} from '../data/constants';
+import {
+  getActivationStatus, getAllPossibleQueryParams, getTpaHint, getTpaProvider,
+  updatePathWithQueryParams,
+} from '../data/utils';
 import { LoginPage } from '../login';
+import AccountActivationMessage from '../login/AccountActivationMessage';
+import {
+ backupLoginForm, backupLoginFormBegin, dismissPasswordResetBanner, loginRequest 
+} from '../login/data/actions';
+import { INVALID_FORM, TPA_AUTHENTICATION_FAILURE } from '../login/data/constants';
+import LoginFailureMessage from '../login/LoginFailure';
+import { RegistrationPage } from '../register';
+import { backupRegistrationForm } from '../register/data/actions';
+import ResetPasswordSuccess from '../reset-password/ResetPasswordSuccess';
 
 const CustomLogistration = (props) => {
-  const { 
-    selectedPage, 
+  const {
+    selectedPage,
     tpaProviders,
     backedUpFormData,
     loginErrorCode,
@@ -68,12 +70,12 @@ const CustomLogistration = (props) => {
     handleInstitutionLogin,
     getTPADataFromBackend,
   } = props;
-  
+
   const tpaHint = getTpaHint();
   const { formatMessage } = useIntl();
   const activationMsgType = getActivationStatus();
   const queryParams = useMemo(() => getAllPossibleQueryParams(), []);
-  
+
   const [key, setKey] = useState('');
   const [formFields, setFormFields] = useState({ ...backedUpFormData.formFields });
   const [errorCode, setErrorCode] = useState({ type: '', count: 0, context: {} });
@@ -81,6 +83,8 @@ const CustomLogistration = (props) => {
   const navigate = useNavigate();
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
   const hideRegistrationLink = getConfig().SHOW_REGISTRATION_LINKS === false;
+
+  const logoUrl = getConfig().LOGO_URL;
 
   useEffect(() => {
     const authService = getAuthService();
@@ -146,6 +150,15 @@ const CustomLogistration = (props) => {
     props.clearThirdPartyAuthContextErrorMessage();
     if (tabKey === LOGIN_PAGE) {
       props.backupRegistrationForm();
+      // Refresh TPA data for the new page
+      const payload = { ...queryParams };
+      if (tpaHint) {
+        payload.tpa_hint = tpaHint;
+      }
+      // Add a small delay to ensure state updates before fetching new data
+      setTimeout(() => {
+        getTPADataFromBackend(payload);
+      }, 100);
     } else if (tabKey === REGISTER_PAGE) {
       props.backupLoginForm();
     }
@@ -234,8 +247,8 @@ const CustomLogistration = (props) => {
       <div>
         {institutionLogin && (
           <Tabs defaultActiveKey="" id="controlled-tab" onSelect={handleInstitutionLogin}>
-            <Tab 
-              title={
+            <Tab
+              title={(
                 <div className="d-flex">
                   <span className="ml-2">
                     {selectedPage === LOGIN_PAGE
@@ -243,8 +256,8 @@ const CustomLogistration = (props) => {
                       : formatMessage(messages['logistration.register'])}
                   </span>
                 </div>
-              } 
-              eventKey={LOGIN_PAGE} 
+              )}
+              eventKey={LOGIN_PAGE}
             />
           </Tabs>
         )}
@@ -263,7 +276,7 @@ const CustomLogistration = (props) => {
       { key && (
         <Navigate to={updatePathWithQueryParams(key)} replace />
       )}
-      
+
       {/* Main Content */}
       <div className="main-content">
         {!institutionLogin && !isValidTpaHint() && hideRegistrationLink && (
@@ -271,7 +284,7 @@ const CustomLogistration = (props) => {
             {formatMessage(messages[selectedPage === LOGIN_PAGE ? 'logistration.sign.in' : 'logistration.register'])}
           </h3>
         )}
-        
+
         {selectedPage === LOGIN_PAGE ? (
           // Login Page
           <>
@@ -280,19 +293,19 @@ const CustomLogistration = (props) => {
               redirectUrl={loginResult.redirectUrl}
               finishAuthUrl={finishAuthUrl}
             />
-            
+
             {providers && providers.length > 0 ? (
               // Social Login Enabled - Use split layout
               <div className="login-split-layout">
                 {/* Logo and Heading at the top when social login is enabled */}
                 <div className="logo-section">
                   <div className="titan-logo">
-                    <img src="/titanEd_logo.png" alt="TitanEd Logo" />
+                    <img src={logoUrl} alt="TitanEd Logo" />
                   </div>
                 </div>
-                
+
                 <h2 className="main-heading">Log In To Your Account</h2>
-                
+
                 {/* Left Section - Social Login */}
                 <div className="social-login-section">
                   {/* Social Login Providers from API */}
@@ -316,7 +329,7 @@ const CustomLogistration = (props) => {
                 {/* Right Section - Traditional Login */}
                 <div className="traditional-login-section">
                   <h3 className="section-heading mb-4">Please Enter Your Details</h3>
-                  
+
                   {/* Error Messages and Success Banner */}
                   <div className="mb-4">
                     <LoginFailureMessage
@@ -333,7 +346,7 @@ const CustomLogistration = (props) => {
                     />
                     {showResetPasswordSuccessBanner && <ResetPasswordSuccess />}
                   </div>
-                  
+
                   <Form id="sign-in-form" name="sign-in-form" onSubmit={handleSubmit}>
                     <FormGroup
                       name="emailOrUsername"
@@ -345,7 +358,7 @@ const CustomLogistration = (props) => {
                       floatingLabel="Email or Username"
                       placeholder="Example@titaned.com"
                     />
-                    
+
                     <PasswordField
                       name="password"
                       value={formFields.password}
@@ -358,7 +371,7 @@ const CustomLogistration = (props) => {
                       floatingLabel="Password"
                       placeholder="Enter password"
                     />
-                    
+
                     <StatefulButton
                       name="sign-in"
                       id="sign-in"
@@ -367,13 +380,13 @@ const CustomLogistration = (props) => {
                       className="login-btn w-100 mb-4"
                       state={submitState}
                       labels={{
-                        default: "Login",
+                        default: 'Login',
                         pending: '',
                       }}
                       onClick={handleSubmit}
                       onMouseDown={(event) => event.preventDefault()}
                     />
-                    
+
                     <Link
                       id="forgot-password"
                       name="forgot-password"
@@ -383,11 +396,11 @@ const CustomLogistration = (props) => {
                     >
                       Forgot password?
                     </Link>
-                    
+
                     <div className="text-center mt-4">
                       <span className="signup-text">Don't Have An Account? </span>
-                      <Button 
-                        variant="link" 
+                      <Button
+                        variant="link"
                         className="signup-link"
                         onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
                       >
@@ -403,16 +416,16 @@ const CustomLogistration = (props) => {
                 {/* Logo and Heading */}
                 <div className="logo-section mb-4">
                   <div className="titan-logo">
-                    <img src="/titanEd_logo.png" alt="TitanEd Logo" />
+                    <img src={logoUrl} alt="TitanEd Logo" />
                   </div>
                 </div>
-                
+
                 <h2 className="main-heading mb-4">Log In To Your Account</h2>
-                
+
                 {/* Form Container */}
                 <div className="login-form-container">
                   <h3 className="section-heading mb-4">Please Enter Your Details</h3>
-                  
+
                   {/* Error Messages and Success Banner */}
                   <div className="mb-4">
                     <LoginFailureMessage
@@ -429,7 +442,7 @@ const CustomLogistration = (props) => {
                     />
                     {showResetPasswordSuccessBanner && <ResetPasswordSuccess />}
                   </div>
-                  
+
                   <Form id="sign-in-form" name="sign-in-form" onSubmit={handleSubmit}>
                     <FormGroup
                       name="emailOrUsername"
@@ -441,7 +454,7 @@ const CustomLogistration = (props) => {
                       floatingLabel="Email or Username"
                       placeholder="Example@titaned.com"
                     />
-                    
+
                     <PasswordField
                       name="password"
                       value={formFields.password}
@@ -454,7 +467,7 @@ const CustomLogistration = (props) => {
                       floatingLabel="Password"
                       placeholder="Enter password"
                     />
-                    
+
                     <StatefulButton
                       name="sign-in"
                       id="sign-in"
@@ -463,13 +476,13 @@ const CustomLogistration = (props) => {
                       className="login-btn w-100 mb-4"
                       state={submitState}
                       labels={{
-                        default: "Login",
+                        default: 'Login',
                         pending: '',
                       }}
                       onClick={handleSubmit}
                       onMouseDown={(event) => event.preventDefault()}
                     />
-                    
+
                     <Link
                       id="forgot-password"
                       name="forgot-password"
@@ -479,11 +492,11 @@ const CustomLogistration = (props) => {
                     >
                       Forgot password?
                     </Link>
-                    
+
                     <div className="text-center mt-4">
                       <span className="signup-text">Don't Have An Account? </span>
-                      <Button 
-                        variant="link" 
+                      <Button
+                        variant="link"
                         className="signup-link"
                         onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
                       >
@@ -504,12 +517,12 @@ const CustomLogistration = (props) => {
                 {/* Logo and Heading at the top when social login is enabled */}
                 <div className="logo-section">
                   <div className="titan-logo">
-                    <img src="/titanEd_logo.png" alt="TitanEd Logo" />
+                    <img src={logoUrl} alt="TitanEd Logo" />
                   </div>
                 </div>
-                
+
                 <h2 className="main-heading">Create An Account</h2>
-                
+
                 {/* Left Section - Social Login */}
                 <div className="social-login-section">
                   {/* Social Login Providers from API */}
@@ -533,18 +546,18 @@ const CustomLogistration = (props) => {
                 {/* Right Section - Traditional Registration Form */}
                 <div className="traditional-login-section">
                   <h3 className="section-heading mb-4">Please Enter Your Details</h3>
-                  
+
                   <div className="registration-form">
                     <RegistrationPage
                       institutionLogin={institutionLogin}
                       handleInstitutionLogin={handleInstitutionLogin}
                     />
-                    
+
                     {/* Already Have Account Link */}
                     <div className="text-center mt-4">
                       <span className="signup-text">Already Have An Account? </span>
-                      <Button 
-                        variant="link" 
+                      <Button
+                        variant="link"
                         className="signup-link"
                         onClick={() => handleOnSelect(LOGIN_PAGE, selectedPage)}
                       >
@@ -560,27 +573,27 @@ const CustomLogistration = (props) => {
                 {/* Logo and Heading */}
                 <div className="logo-section mb-4">
                   <div className="titan-logo">
-                    <img src="/titanEd_logo.png" alt="TitanEd Logo" />
+                    <img src={logoUrl} alt="TitanEd Logo" />
                   </div>
                 </div>
-                
+
                 <h2 className="main-heading mb-4">Create An Account</h2>
-                
+
                 {/* Form Container */}
                 <div className="registration-form-container">
                   <h3 className="section-heading mb-4">Please Enter Your Details</h3>
-                  
+
                   <div className="registration-form">
                     <RegistrationPage
                       institutionLogin={institutionLogin}
                       handleInstitutionLogin={handleInstitutionLogin}
                     />
-                    
+
                     {/* Already Have Account Link */}
                     <div className="text-center mt-4">
                       <span className="signup-text">Already Have An Account? </span>
-                      <Button 
-                        variant="link" 
+                      <Button
+                        variant="link"
                         className="signup-link"
                         onClick={() => handleOnSelect(LOGIN_PAGE, selectedPage)}
                       >
