@@ -11,7 +11,7 @@ export const PAGE_NOT_FOUND = '/notfound';
 export const ENTERPRISE_LOGIN_URL = '/enterprise/login';
 
 // Constants
-export const SUPPORTED_ICON_CLASSES = ['apple', 'facebook', 'fa-google', 'fa-microsoft'];
+export const SUPPORTED_ICON_CLASSES = ['apple', 'facebook', 'fa-google', 'fa-microsoft', 'fa-google-plus', 'fa-linkedin', 'fa-microsoft', 'fa-facebook'];
 
 // Error Codes
 export const FORM_SUBMISSION_ERROR = 'form-submission-error';

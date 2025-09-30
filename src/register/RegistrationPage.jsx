@@ -293,7 +293,7 @@ const RegistrationPage = (props) => {
         ) : (
           <div
             className={classNames(
-              'mw-xs mt-3',
+              'mw-xs mt-3 custom-registration-form-main-container',
               { 'w-100 m-auto pt-4 main-content': registrationEmbedded },
             )}
           >

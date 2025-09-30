@@ -10,3 +10,11 @@
         color: var(--primary) !important;
     }
 }
+
+.registration-form {
+    form {
+        .pgn__form-text-invalid {
+            color: var(--danger) !important;
+        }
+    }
+}

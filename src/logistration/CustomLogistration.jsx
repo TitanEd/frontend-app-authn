@@ -8,7 +8,6 @@ import { injectIntl, useIntl } from '@edx/frontend-platform/i18n';
 import {
   Button,
   Form,
-  Icon,
   StatefulButton,
   Tab,
   Tabs,
@@ -36,13 +35,14 @@ import {
 import { LoginPage } from '../login';
 import AccountActivationMessage from '../login/AccountActivationMessage';
 import {
- backupLoginForm, backupLoginFormBegin, dismissPasswordResetBanner, loginRequest 
+  backupLoginForm, backupLoginFormBegin, dismissPasswordResetBanner, loginRequest,
 } from '../login/data/actions';
 import { INVALID_FORM, TPA_AUTHENTICATION_FAILURE } from '../login/data/constants';
 import LoginFailureMessage from '../login/LoginFailure';
 import { RegistrationPage } from '../register';
 import { backupRegistrationForm } from '../register/data/actions';
 import ResetPasswordSuccess from '../reset-password/ResetPasswordSuccess';
+import { Helmet } from 'react-helmet';
 
 const CustomLogistration = (props) => {
   const {
@@ -273,6 +273,11 @@ const CustomLogistration = (props) => {
 
   return (
     <div className="custom-logistration-container">
+
+      <Helmet>
+        <title>{formatMessage(messages['login.page.title'], { siteName: getConfig().SITE_NAME })}</title>
+      </Helmet>
+
       { key && (
         <Navigate to={updatePathWithQueryParams(key)} replace />
       )}
@@ -306,108 +311,111 @@ const CustomLogistration = (props) => {
 
                 <h2 className="main-heading mt-2">Log In To Your Account</h2>
 
-                {/* Left Section - Social Login */}
-                <div className="social-login-section">
-                  {/* Social Login Providers from API */}
-                  <div className="social-buttons">
-                    <ThirdPartyAuth
-                      currentProvider={currentProvider}
-                      providers={providers}
-                      secondaryProviders={secondaryProviders}
-                      handleInstitutionLogin={handleInstitutionLogin}
-                      thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
-                      isLoginPage
-                    />
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div className="divider">
-                  <span className="divider-text">Or</span>
-                </div>
-
-                {/* Right Section - Traditional Login */}
-                <div className="traditional-login-section">
-                  <h3 className="section-heading mb-4">Please Enter Your Details</h3>
-
-                  {/* Error Messages and Success Banner */}
-                  <div className="mb-4">
-                    <LoginFailureMessage
-                      errorCode={errorCode.type}
-                      errorCount={errorCode.count}
-                      context={errorCode.context}
-                    />
-                    <ThirdPartyAuthAlert
-                      currentProvider={currentProvider}
-                      platformName={platformName}
-                    />
-                    <AccountActivationMessage
-                      messageType={activationMsgType}
-                    />
-                    {showResetPasswordSuccessBanner && <ResetPasswordSuccess />}
-                  </div>
-
-                  <Form id="sign-in-form" name="sign-in-form" onSubmit={handleSubmit}>
-                    <FormGroup
-                      name="emailOrUsername"
-                      value={formFields.emailOrUsername}
-                      autoComplete="on"
-                      handleChange={handleOnChange}
-                      handleFocus={handleOnFocus}
-                      errorMessage={errors.emailOrUsername}
-                      floatingLabel="Email or Username"
-                      placeholder="Example@titaned.com"
-                    />
-
-                    <PasswordField
-                      name="password"
-                      value={formFields.password}
-                      autoComplete="off"
-                      showScreenReaderText={false}
-                      showRequirements={false}
-                      handleChange={handleOnChange}
-                      handleFocus={handleOnFocus}
-                      errorMessage={errors.password}
-                      floatingLabel="Password"
-                      placeholder="Enter password"
-                    />
-
-                    <StatefulButton
-                      name="sign-in"
-                      id="sign-in"
-                      type="submit"
-                      variant="brand"
-                      className="login-btn w-100 mb-4"
-                      state={submitState}
-                      labels={{
-                        default: 'Login',
-                        pending: '',
-                      }}
-                      onClick={handleSubmit}
-                      onMouseDown={(event) => event.preventDefault()}
-                    />
-
-                    <Link
-                      id="forgot-password"
-                      name="forgot-password"
-                      className="forgot-password-link"
-                      to={updatePathWithQueryParams(RESET_PAGE)}
-                      onClick={trackForgotPasswordLinkClick}
-                    >
-                      Forgot password?
-                    </Link>
-
-                    <div className="text-center mt-4">
-                      <span className="signup-text">Don't Have An Account? </span>
-                      <Button
-                        variant="link"
-                        className="signup-link"
-                        onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
-                      >
-                        Sign Up
-                      </Button>
+                {/* Login Form Wrapper */}
+                <div className="login-form-wrapper">
+                  {/* Left Section - Social Login */}
+                  <div className="social-login-section">
+                    {/* Social Login Providers from API */}
+                    <div className="social-buttons">
+                      <ThirdPartyAuth
+                        currentProvider={currentProvider}
+                        providers={providers}
+                        secondaryProviders={secondaryProviders}
+                        handleInstitutionLogin={handleInstitutionLogin}
+                        thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
+                        isLoginPage
+                      />
                     </div>
-                  </Form>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="divider">
+                    <span className="divider-text">Or</span>
+                  </div>
+
+                  {/* Right Section - Traditional Login */}
+                  <div className="traditional-login-section">
+                    <h3 className="section-heading mb-4">Please Enter Your Details</h3>
+
+                    {/* Error Messages and Success Banner */}
+                    <div className="mb-4">
+                      <LoginFailureMessage
+                        errorCode={errorCode.type}
+                        errorCount={errorCode.count}
+                        context={errorCode.context}
+                      />
+                      <ThirdPartyAuthAlert
+                        currentProvider={currentProvider}
+                        platformName={platformName}
+                      />
+                      <AccountActivationMessage
+                        messageType={activationMsgType}
+                      />
+                      {showResetPasswordSuccessBanner && <ResetPasswordSuccess />}
+                    </div>
+
+                    <Form id="sign-in-form" name="sign-in-form" onSubmit={handleSubmit}>
+                      <FormGroup
+                        name="emailOrUsername"
+                        value={formFields.emailOrUsername}
+                        autoComplete="on"
+                        handleChange={handleOnChange}
+                        handleFocus={handleOnFocus}
+                        errorMessage={errors.emailOrUsername}
+                        floatingLabel="Email or Username"
+                        placeholder="Example@titaned.com"
+                      />
+
+                      <PasswordField
+                        name="password"
+                        value={formFields.password}
+                        autoComplete="off"
+                        showScreenReaderText={false}
+                        showRequirements={false}
+                        handleChange={handleOnChange}
+                        handleFocus={handleOnFocus}
+                        errorMessage={errors.password}
+                        floatingLabel="Password"
+                        placeholder="Enter password"
+                      />
+
+                      <StatefulButton
+                        name="sign-in"
+                        id="sign-in"
+                        type="submit"
+                        variant="brand"
+                        className="login-btn w-100 mb-4"
+                        state={submitState}
+                        labels={{
+                          default: 'Login',
+                          pending: '',
+                        }}
+                        onClick={handleSubmit}
+                        onMouseDown={(event) => event.preventDefault()}
+                      />
+
+                      <Link
+                        id="forgot-password"
+                        name="forgot-password"
+                        className="forgot-password-link"
+                        to={updatePathWithQueryParams(RESET_PAGE)}
+                        onClick={trackForgotPasswordLinkClick}
+                      >
+                        Forgot password?
+                      </Link>
+
+                      <div className="text-center mt-4">
+                        <span className="signup-text">Don't Have An Account? </span>
+                        <Button
+                          variant="link"
+                          className="signup-link"
+                          onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
+                        >
+                          Sign Up
+                        </Button>
+                      </div>
+                    </Form>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -523,46 +531,49 @@ const CustomLogistration = (props) => {
 
                 <h2 className="main-heading">Create An Account</h2>
 
-                {/* Left Section - Social Login */}
-                <div className="social-login-section">
-                  {/* Social Login Providers from API */}
-                  <div className="social-buttons">
-                    <ThirdPartyAuth
-                      currentProvider={currentProvider}
-                      providers={providers}
-                      secondaryProviders={secondaryProviders}
-                      handleInstitutionLogin={handleInstitutionLogin}
-                      thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
-                      isLoginPage={false}
-                    />
+                {/* Registration Form Wrapper */}
+                <div className="registration-form-wrapper">
+                  {/* Left Section - Social Login */}
+                  <div className="social-login-section">
+                    {/* Social Login Providers from API */}
+                    <div className="social-buttons">
+                      <ThirdPartyAuth
+                        currentProvider={currentProvider}
+                        providers={providers}
+                        secondaryProviders={secondaryProviders}
+                        handleInstitutionLogin={handleInstitutionLogin}
+                        thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
+                        isLoginPage={false}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {/* Divider */}
-                <div className="divider">
-                  <span className="divider-text">Or</span>
-                </div>
+                  {/* Divider */}
+                  <div className="divider">
+                    <span className="divider-text">Or</span>
+                  </div>
 
-                {/* Right Section - Traditional Registration Form */}
-                <div className="traditional-login-section">
-                  <h3 className="section-heading mb-4">Please Enter Your Details</h3>
+                  {/* Right Section - Traditional Registration Form */}
+                  <div className="traditional-login-section">
+                    <h3 className="section-heading mb-4">Please Enter Your Details</h3>
 
-                  <div className="registration-form">
-                    <RegistrationPage
-                      institutionLogin={institutionLogin}
-                      handleInstitutionLogin={handleInstitutionLogin}
-                    />
+                    <div className="registration-form">
+                      <RegistrationPage
+                        institutionLogin={institutionLogin}
+                        handleInstitutionLogin={handleInstitutionLogin}
+                      />
 
-                    {/* Already Have Account Link */}
-                    <div className="text-center mt-4">
-                      <span className="signup-text">Already Have An Account? </span>
-                      <Button
-                        variant="link"
-                        className="signup-link"
-                        onClick={() => handleOnSelect(LOGIN_PAGE, selectedPage)}
-                      >
-                        Login
-                      </Button>
+                      {/* Already Have Account Link */}
+                      <div className="text-center mt-4">
+                        <span className="signup-text">Already Have An Account? </span>
+                        <Button
+                          variant="link"
+                          className="signup-link"
+                          onClick={() => handleOnSelect(LOGIN_PAGE, selectedPage)}
+                        >
+                          Login
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
