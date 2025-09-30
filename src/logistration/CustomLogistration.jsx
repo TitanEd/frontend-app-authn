@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { getConfig } from '@edx/frontend-platform';
 import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
-import { getAuthService } from '@edx/frontend-platform/auth';
+import { getAuthService, getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { injectIntl, useIntl } from '@edx/frontend-platform/i18n';
 import {
   Button,
@@ -80,6 +80,7 @@ const CustomLogistration = (props) => {
   const [formFields, setFormFields] = useState({ ...backedUpFormData.formFields });
   const [errorCode, setErrorCode] = useState({ type: '', count: 0, context: {} });
   const [errors, setErrors] = useState({ ...backedUpFormData.errors });
+  const [enablePublicSignup, setEnablePublicSignup] = useState(false); // Default to false
   const navigate = useNavigate();
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
   const hideRegistrationLink = getConfig().SHOW_REGISTRATION_LINKS === false;
@@ -110,6 +111,26 @@ const CustomLogistration = (props) => {
     }
     getTPADataFromBackend(payload);
   }, [getTPADataFromBackend, queryParams, tpaHint]);
+
+  // Fetch MFE context to check enable_public_signup
+  useEffect(() => {
+    const fetchMFEContext = async () => {
+      try {
+        const response = await getAuthenticatedHttpClient().get(
+          `${getConfig().LMS_BASE_URL}/titaned/api/v1/mfe_context`,
+        );
+        
+        if (response.status === 200 && response.data) {
+          setEnablePublicSignup(response.data.enable_public_signup !== false);
+        }
+      } catch (error) {
+        console.error('Error fetching MFE context:', error);
+        // Keep default value (true) if API fails
+      }
+    };
+
+    fetchMFEContext();
+  }, []);
 
   useEffect(() => {
     if (shouldBackupState) {
@@ -404,16 +425,18 @@ const CustomLogistration = (props) => {
                         Forgot password?
                       </Link>
 
-                      <div className="text-center mt-4">
-                        <span className="signup-text">Don't Have An Account? </span>
-                        <Button
-                          variant="link"
-                          className="signup-link"
-                          onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
-                        >
-                          Sign Up
-                        </Button>
-                      </div>
+                      {enablePublicSignup && (
+                        <div className="text-center mt-4">
+                          <span className="signup-text">Don't Have An Account? </span>
+                          <Button
+                            variant="link"
+                            className="signup-link"
+                            onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
+                          >
+                            Sign Up
+                          </Button>
+                        </div>
+                      )}
                     </Form>
                   </div>
                 </div>
@@ -501,16 +524,18 @@ const CustomLogistration = (props) => {
                       Forgot password?
                     </Link>
 
-                    <div className="text-center mt-4">
-                      <span className="signup-text">Don't Have An Account? </span>
-                      <Button
-                        variant="link"
-                        className="signup-link"
-                        onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
-                      >
-                        Sign Up
-                      </Button>
-                    </div>
+                    {enablePublicSignup && (
+                      <div className="text-center mt-4">
+                        <span className="signup-text">Don't Have An Account? </span>
+                        <Button
+                          variant="link"
+                          className="signup-link"
+                          onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
+                        >
+                          Sign Up
+                        </Button>
+                      </div>
+                    )}
                   </Form>
                 </div>
               </div>
