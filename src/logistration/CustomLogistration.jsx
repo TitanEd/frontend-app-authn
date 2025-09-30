@@ -304,7 +304,7 @@ const CustomLogistration = (props) => {
                   </div>
                 </div>
 
-                <h2 className="main-heading">Log In To Your Account</h2>
+                <h2 className="main-heading mt-2">Log In To Your Account</h2>
 
                 {/* Left Section - Social Login */}
                 <div className="social-login-section">
