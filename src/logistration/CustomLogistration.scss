@@ -269,7 +269,7 @@
       padding: 0 !important;
       
       &:hover {
-        color: var(--primary-alt) !important;
+        color: var(--primary-hover) !important;
         text-decoration: underline;
       }
     }
@@ -373,7 +373,7 @@
     padding-bottom: 0.4rem !important;
     
     &:hover {
-      color: var(--primary-alt) !important;
+      color: var(--primary-hover) !important;
       text-decoration: underline;
     }
   }
@@ -448,7 +448,7 @@
     color: var(--primary) !important;
     
     &:hover {
-      color: var(--primary-alt) !important;
+      color: var(--primary-hover) !important;
       text-decoration: underline;
     }
   }
