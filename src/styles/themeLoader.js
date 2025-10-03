@@ -6,7 +6,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 export const applyTheme = async () => {
   try {
     const response = await getAuthenticatedHttpClient().get(
-      `${getConfig().LMS_BASE_URL}/titaned/api/v1/mfe_context`,
+      `${getConfig().LMS_BASE_URL}/titaned/api/v1/mfe_context/`,
     );
 
     if (response.status !== 200) {

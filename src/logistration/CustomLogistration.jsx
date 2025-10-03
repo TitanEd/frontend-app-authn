@@ -117,7 +117,7 @@ const CustomLogistration = (props) => {
     const fetchMFEContext = async () => {
       try {
         const response = await getAuthenticatedHttpClient().get(
-          `${getConfig().LMS_BASE_URL}/titaned/api/v1/mfe_context`,
+          `${getConfig().LMS_BASE_URL}/titaned/api/v1/mfe_context/`,
         );
         
         if (response.status === 200 && response.data) {
