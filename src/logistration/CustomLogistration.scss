@@ -342,7 +342,7 @@
     // font-weight: 500;
     
     &:hover {
-      color: var(--primary-alt) !important;
+      color: var(--primary-hover) !important;
       text-decoration: underline;
     }
   }
@@ -481,7 +481,7 @@
       // font-weight: 500;
       
       &:hover {
-        color: var(--primary-alt) !important;
+        color: var(--primary-hover) !important;
         text-decoration: underline;
       }
     }
