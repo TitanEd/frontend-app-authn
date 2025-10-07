@@ -11,5 +11,7 @@ export { default as reducer } from './data/reducers';
 export { default as saga } from './data/sagas';
 export { storeName } from './data/selectors';
 export { default as FormGroup } from './FormGroup';
+export { default as CustomFormGroup } from './CustomFormGroup';
 export { default as PasswordField } from './PasswordField';
+export { default as CustomPasswordField } from './CustomPasswordField';
 export { default as Zendesk } from './Zendesk';

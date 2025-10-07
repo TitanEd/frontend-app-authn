@@ -1,6 +1,8 @@
 import { PLUGIN_OPERATIONS, DIRECT_PLUGIN } from "@openedx/frontend-plugin-framework";
 import CustomLogistration from "./src/logistration/CustomLogistration";
 import CustomForgotPage from "./src/forgot-password/CustomForgotPage";
+import CustomPasswordField from "./src/common-components/CustomPasswordField";
+import CustomFormGroup from "./src/common-components/CustomFormGroup";
 
 
 const config = {
@@ -31,6 +33,36 @@ const config = {
                         priority: 1,
                         RenderWidget: (props) => (
                             <CustomForgotPage {...props} />
+                        )
+                    }
+                }
+            ]
+        },
+        password_field_plugin_slot: {
+            plugins: [
+                {
+                    op: PLUGIN_OPERATIONS.Insert,
+                    widget: {
+                        id: "password_field_plugin_slot",
+                        type: DIRECT_PLUGIN,
+                        priority: 1,
+                        RenderWidget: (props) => (
+                            <CustomPasswordField {...props} />
+                        )
+                    }
+                }
+            ]
+        },
+        form_group_plugin_slot: {
+            plugins: [
+                {
+                    op: PLUGIN_OPERATIONS.Insert,
+                    widget: {
+                        id: "form_group_plugin_slot",
+                        type: DIRECT_PLUGIN,
+                        priority: 1,
+                        RenderWidget: (props) => (
+                            <CustomFormGroup {...props} />
                         )
                     }
                 }

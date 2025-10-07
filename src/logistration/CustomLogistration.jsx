@@ -80,7 +80,7 @@ const CustomLogistration = (props) => {
   const [formFields, setFormFields] = useState({ ...backedUpFormData.formFields });
   const [errorCode, setErrorCode] = useState({ type: '', count: 0, context: {} });
   const [errors, setErrors] = useState({ ...backedUpFormData.errors });
-  const [enablePublicSignup, setEnablePublicSignup] = useState(false); // Default to false
+  const [enablePublicSignup, setEnablePublicSignup] = useState(true); // Default to false
   const navigate = useNavigate();
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
   const hideRegistrationLink = getConfig().SHOW_REGISTRATION_LINKS === false;
