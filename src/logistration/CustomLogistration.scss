@@ -116,7 +116,6 @@
     font-size: 2rem;
     font-weight: 700;
     color: var(--text-primary);
-    // margin-bottom: 2rem;
   }
 }
 
@@ -132,7 +131,6 @@
     .h4 {
       display: none;
     }
-    // margin-top: 6rem;
     // Style the existing social auth providers
     .btn-social {
       border: 2px solid var(--border-color);
@@ -182,7 +180,6 @@
   &::before {
     content: '';
     position: absolute;
-    // top: 90%;
     left: -7rem;
     right: 0;
     height: 1px;
@@ -199,7 +196,6 @@
     font-weight: 500;
     z-index: 2;
     font-size: 26px;
-    // margin-top: 8rem;
   }
 }
 
@@ -294,7 +290,6 @@
     
     &:focus {
       border-color: var(--primary);
-      // box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
     
     &::placeholder {
@@ -378,9 +373,6 @@
     }
   }
   
-  // .btn-link:hover {
-  //   color: var(--primary-alt) !important;
-  // }
 }
 
 // Global styles for registration button (from RegistrationPage.jsx)
@@ -414,7 +406,6 @@
   
   .logo-section {
     width: 100%;
-    // margin-bottom: -2rem;
     
     .titan-logo {
       text-align: left;
@@ -478,7 +469,6 @@
     .forgot-password-link {
       color: var(--primary) !important;
       text-decoration: none;
-      // font-weight: 500;
       
       &:hover {
         color: var(--primary-hover) !important;
@@ -597,7 +587,6 @@
     .main-heading {
       font-size: 1.5rem !important;
       text-align: left;
-      // margin-bottom: 1rem !important;
       margin-top: 2rem !important;
     }
     

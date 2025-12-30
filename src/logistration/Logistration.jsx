@@ -5,6 +5,7 @@ import { getConfig } from '@edx/frontend-platform';
 import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
 import { getAuthService } from '@edx/frontend-platform/auth';
 import { useIntl } from '@edx/frontend-platform/i18n';
+import { PluginSlot } from '@openedx/frontend-plugin-framework';
 import {
   Icon,
   Tab,
@@ -28,7 +29,6 @@ import { LoginPage } from '../login';
 import { backupLoginForm } from '../login/data/actions';
 import { RegistrationPage } from '../register';
 import { backupRegistrationForm } from '../register/data/actions';
-import { PluginSlot } from '@openedx/frontend-plugin-framework';
 
 const Logistration = (props) => {
   const { selectedPage, tpaProviders } = props;
@@ -106,9 +106,9 @@ const Logistration = (props) => {
         handleInstitutionLogin,
         isValidTpaHint,
         hideRegistrationLink,
-        selectedPage
+        selectedPage,
       }}
-    >  
+    >
       <BaseContainer>
         <div>
           {disablePublicAccountCreation
