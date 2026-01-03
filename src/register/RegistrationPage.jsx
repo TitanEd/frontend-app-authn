@@ -293,7 +293,7 @@ const RegistrationPage = (props) => {
         ) : (
           <div
             className={classNames(
-              'mw-xs mt-3',
+              'mw-xs mt-3 custom-registration-form-main-container',
               { 'w-100 m-auto pt-4 main-content': registrationEmbedded },
             )}
           >
@@ -374,13 +374,15 @@ const RegistrationPage = (props) => {
                 onMouseDown={(e) => e.preventDefault()}
               />
               {!registrationEmbedded && (
-                <ThirdPartyAuth
-                  currentProvider={currentProvider}
-                  providers={providers}
-                  secondaryProviders={secondaryProviders}
-                  handleInstitutionLogin={handleInstitutionLogin}
-                  thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
-                />
+                <div className="registration-social-login-section">
+                  <ThirdPartyAuth
+                    currentProvider={currentProvider}
+                    providers={providers}
+                    secondaryProviders={secondaryProviders}
+                    handleInstitutionLogin={handleInstitutionLogin}
+                    thirdPartyAuthApiStatus={thirdPartyAuthApiStatus}
+                  />
+                </div>
               )}
             </Form>
           </div>

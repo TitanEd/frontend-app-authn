@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useIntl } from '@edx/frontend-platform/i18n';
-import { PluginSlot } from '@openedx/frontend-plugin-framework';
 import {
   Form, Icon, IconButton, OverlayTrigger, Tooltip, useToggle,
 } from '@openedx/paragon';
@@ -16,7 +15,7 @@ import { LETTER_REGEX, NUMBER_REGEX } from '../data/constants';
 import { clearRegistrationBackendError, fetchRealtimeValidations } from '../register/data/actions';
 import { validatePasswordField } from '../register/data/utils';
 
-const PasswordField = (props) => {
+const CustomPasswordField = (props) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
@@ -118,80 +117,82 @@ const PasswordField = (props) => {
   );
 
   return (
-    <PluginSlot
-      id="password_field_plugin_slot"
-      pluginProps={{
-        ...props,
-        formatMessage,
-        dispatch,
-        validationApiRateLimited,
-        isPasswordHidden,
-        setHiddenTrue,
-        setHiddenFalse,
-        showTooltip,
-        setShowTooltip,
-        handleBlur,
-        handleFocus,
-        HideButton,
-        ShowButton,
-        placement,
-        tooltip,
-      }}
-    >
-      <Form.Group controlId={props.name} isInvalid={props.errorMessage !== ''}>
-        <OverlayTrigger key="tooltip" placement={placement} overlay={tooltip} show={showTooltip}>
-          <Form.Control
-            as="input"
-            className="form-group__form-field"
-            type={isPasswordHidden ? 'password' : 'text'}
-            name={props.name}
-            value={props.value}
-            autoComplete={props.autoComplete}
-            aria-invalid={props.errorMessage !== ''}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onChange={props.handleChange}
-            controlClassName={props.borderClass}
-            trailingElement={isPasswordHidden ? ShowButton : HideButton}
-            floatingLabel={props.floatingLabel}
-          />
-        </OverlayTrigger>
-        {props.errorMessage !== '' && (
-          <Form.Control.Feedback key="error" className="form-text-size" hasIcon={false} feedback-for={props.name} type="invalid">
-            {props.errorMessage}
-            {props.showScreenReaderText && <span className="sr-only">{formatMessage(messages['password.sr.only.helping.text'])}</span>}
-          </Form.Control.Feedback>
-        )}
-      </Form.Group>
-    </PluginSlot>
+    <Form.Group className={`mb-4 ${props.className || ''}`}>
+      <Form.Label>
+        {props.floatingLabel}
+        {props.required && <span className="required-asterisk"> *</span>}
+      </Form.Label>
+      <OverlayTrigger key="tooltip" placement={placement} overlay={tooltip} show={showTooltip}>
+        <Form.Control
+          as="input"
+          className="form-group__form-field"
+          type={isPasswordHidden ? 'password' : 'text'}
+          name={props.name}
+          value={props.value}
+          autoComplete={props.autoComplete}
+          aria-invalid={props.errorMessage !== ''}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={props.handleChange}
+          controlClassName={props.borderClass}
+          trailingElement={isPasswordHidden ? ShowButton : HideButton}
+          isInvalid={props.errorMessage !== ''}
+          placeholder={props.placeholder}
+        />
+      </OverlayTrigger>
+      {props.helpText && props.helpText.length > 0 && (
+        <Form.Text>
+          {props.helpText.map((message, index) => (
+            <span key={`help-text-${index.toString()}`}>
+              {message}
+              {index < props.helpText.length - 1 && <br />}
+            </span>
+          ))}
+        </Form.Text>
+      )}
+      {props.errorMessage !== '' && (
+        <Form.Control.Feedback type="invalid">
+          {props.errorMessage}
+          {props.showScreenReaderText && <span className="sr-only">{formatMessage(messages['password.sr.only.helping.text'])}</span>}
+        </Form.Control.Feedback>
+      )}
+    </Form.Group>
   );
 };
 
-PasswordField.defaultProps = {
+CustomPasswordField.defaultProps = {
   borderClass: '',
+  className: '',
   errorMessage: '',
   handleBlur: null,
   handleFocus: null,
   handleChange: () => {},
   handleErrorChange: null,
+  helpText: [],
+  placeholder: '',
+  required: false,
   showRequirements: true,
   showScreenReaderText: true,
   autoComplete: null,
 };
 
-PasswordField.propTypes = {
+CustomPasswordField.propTypes = {
   borderClass: PropTypes.string,
+  className: PropTypes.string,
   errorMessage: PropTypes.string,
   floatingLabel: PropTypes.string.isRequired,
   handleBlur: PropTypes.func,
   handleFocus: PropTypes.func,
   handleChange: PropTypes.func,
   handleErrorChange: PropTypes.func,
+  helpText: PropTypes.arrayOf(PropTypes.string),
   name: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  required: PropTypes.bool,
   showRequirements: PropTypes.bool,
   value: PropTypes.string.isRequired,
   autoComplete: PropTypes.string,
   showScreenReaderText: PropTypes.bool,
 };
 
-export default PasswordField;
+export default CustomPasswordField;

@@ -12,6 +12,8 @@ import { ErrorPage } from '@edx/frontend-platform/react';
 import configuration from './config';
 import messages from './i18n';
 import MainApp from './MainApp';
+import 'titaned-lib/dist/index.css';
+import './styles/styles-overrides.scss';
 
 subscribe(APP_READY, () => {
   ReactDOM.render(

@@ -26,7 +26,7 @@ const SocialAuthProviders = (props) => {
       id={provider.id}
       key={provider.id}
       type="button"
-      className={`btn-social btn-${provider.id} ${index % 2 === 0 ? 'mr-3' : ''}`}
+      className={`btn-social btn-${provider.id}`}
       data-provider-url={referrer === LOGIN_PAGE ? provider.loginUrl : provider.registerUrl}
       onClick={handleSubmit}
     >
@@ -44,7 +44,7 @@ const SocialAuthProviders = (props) => {
               )}
           </div>
         )}
-      <span id="provider-name" className="notranslate mr-auto pl-2" aria-hidden="true">{provider.name}</span>
+      <span id="provider-name" className="notranslate pl-2" aria-hidden="true">{provider.name}</span>
       <span className="sr-only">
         {referrer === LOGIN_PAGE
           ? formatMessage(messages['sso.sign.in.with'], { providerName: provider.name })

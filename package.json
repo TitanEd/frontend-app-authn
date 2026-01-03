@@ -14,7 +14,7 @@
     "i18n_extract": "fedx-scripts formatjs extract",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "snapshot": "fedx-scripts jest --updateSnapshot",
-    "start": "fedx-scripts webpack-dev-server --progress",
+    "start": "set PUBLIC_PATH=/authn/&&fedx-scripts webpack-dev-server --progress --host apps.local.openedx.io",
     "test": "fedx-scripts jest --coverage --passWithNoTests"
   },
   "husky": {
@@ -39,6 +39,7 @@
     "@fortawesome/free-brands-svg-icons": "6.6.0",
     "@fortawesome/free-solid-svg-icons": "6.6.0",
     "@fortawesome/react-fontawesome": "0.2.2",
+    "@openedx/frontend-plugin-framework": "^1.7.0",
     "@openedx/paragon": "^22.1.1",
     "@optimizely/react-sdk": "^2.9.1",
     "@redux-devtools/extension": "3.3.0",
@@ -68,7 +69,8 @@
     "redux-thunk": "2.4.2",
     "regenerator-runtime": "0.14.1",
     "reselect": "4.1.8",
-    "universal-cookie": "4.0.4"
+    "universal-cookie": "4.0.4",
+    "titaned-lib": "^0.0.106"
   },
   "devDependencies": {
     "@edx/browserslist-config": "^1.1.1",

@@ -6,7 +6,9 @@
 @import "_progressive_profiling_page.scss";
 @import "_login_page.scss";
 @import "_forgot_password.scss";
+@import "../forgot-password/CustomForgotPassword.scss";
 @import "_recommendations_card_base.scss";
+@import "../logistration/CustomLogistration.scss";
 //
 // ----------------------------
 // #COLORS
@@ -402,7 +404,7 @@ select.form-control {
   }
 
   .tpa-skeleton {
-    min-width: 464px !important;
+    min-width: 464px;
   }
 }
 
@@ -431,7 +433,6 @@ select.form-control {
   .welcome-page-content,
   .main-content {
     min-width: 100vw !important;
-    padding: 1.5rem !important;
   }
 
   #password-requirement-top {

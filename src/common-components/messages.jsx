@@ -132,6 +132,11 @@ const messages = defineMessages({
     defaultMessage: 'Company or school credentials',
     description: 'Company or school login link text.',
   },
+  'login.page.title': {
+    id: 'login.page.title',
+    defaultMessage: 'Login | {siteName}',
+    description: 'login page title',
+  },
 });
 
 export default messages;
