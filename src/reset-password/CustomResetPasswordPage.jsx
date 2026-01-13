@@ -8,10 +8,8 @@ import {
   Icon,
   Spinner,
   StatefulButton,
-  Tab,
-  Tabs,
 } from '@openedx/paragon';
-import { ChevronLeft } from '@openedx/paragon/icons';
+import { ArrowBack } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -24,16 +22,13 @@ import { resetPasswordResultSelector } from './data/selectors';
 import { validatePassword } from './data/service';
 import messages from './messages';
 import ResetPasswordFailure from './ResetPasswordFailure';
-import BaseContainer from '../base-container';
 import { PasswordField } from '../common-components';
-import { PluginSlot } from '@openedx/frontend-plugin-framework';
-
 import {
   LETTER_REGEX, LOGIN_PAGE, NUMBER_REGEX, RESET_PAGE,
 } from '../data/constants';
 import { getAllPossibleQueryParams, updatePathWithQueryParams, windowScrollTo } from '../data/utils';
 
-const ResetPasswordPage = (props) => {
+const CustomResetPasswordPage = (props) => {
   const { formatMessage } = useIntl();
   const newPasswordError = formatMessage(messages['password.validation.message']);
 
@@ -62,9 +57,7 @@ const ResetPasswordPage = (props) => {
       };
       errorMessage = await validatePassword(payload);
     } catch (err) {
-      // If validation fails, keep errorMessage empty to allow form submission
       errorMessage = '';
-      console.error('Password validation error:', err);
     }
     setFormErrors({ ...formErrors, newPassword: errorMessage });
   };
@@ -79,7 +72,7 @@ const ResetPasswordPage = (props) => {
         }
         break;
       case 'confirmPassword':
-        if (value === '') {
+        if (!value) {
           formErrors.confirmPassword = formatMessage(messages['confirm.your.password']);
         } else if (value !== newPassword) {
           formErrors.confirmPassword = formatMessage(messages['passwords.do.not.match']);
@@ -122,23 +115,16 @@ const ResetPasswordPage = (props) => {
         new_password2: confirmPassword,
       };
       const params = getAllPossibleQueryParams();
-      props.resetPassword(formPayload, props.token, params);
+      props.resetPassword(formPayload, props.token || token, params);
     } else {
       setErrorCode(FORM_SUBMISSION_ERROR);
       windowScrollTo({ left: 0, top: 0, behavior: 'smooth' });
     }
   };
 
-  const tabTitle = (
-    <div className="d-inline-flex flex-wrap align-items-center">
-      <Icon src={ChevronLeft} />
-      <span className="ml-2">{formatMessage(messages['sign.in'])}</span>
-    </div>
-  );
-
   if (props.status === TOKEN_STATE.PENDING) {
-    if (token) {
-      props.validateToken(token);
+    if (token || props.token) {
+      props.validateToken(props.token || token);
       return <Spinner animation="border" variant="primary" className="spinner--position-centered" />;
     }
   } else if (props.status === PASSWORD_RESET_ERROR) {
@@ -147,83 +133,87 @@ const ResetPasswordPage = (props) => {
     navigate(updatePathWithQueryParams(LOGIN_PAGE));
   } else {
     return (
-      <PluginSlot
-        id="reset_password_plugin_slot"
-        pluginProps={{
-          token,
-          status: props.status,
-          errorMsg: props.errorMsg,
-          errorCode,
-          resetPassword: props.resetPassword,
-          validateToken: props.validateToken,
-        }}
-      >
-        <BaseContainer>
-          <div>
-            <Helmet>
-              <title>
-                {formatMessage(messages['reset.password.page.title'], { siteName: getConfig().SITE_NAME })}
-              </title>
-            </Helmet>
-            <Tabs activeKey="" id="controlled-tab" onSelect={(key) => navigate(updatePathWithQueryParams(key))}>
-              <Tab title={tabTitle} eventKey={LOGIN_PAGE} />
-            </Tabs>
-            <div id="main-content" className="main-content">
-              <div className="mw-xs">
-                <ResetPasswordFailure errorCode={errorCode} errorMsg={props.errorMsg} />
-                <h4>{formatMessage(messages['reset.password'])}</h4>
-                <p className="mb-4">{formatMessage(messages['reset.password.page.instructions'])}</p>
-                <Form id="set-reset-password-form" name="set-reset-password-form">
-                  <PasswordField
-                    name="newPassword"
-                    value={newPassword}
-                    handleChange={(e) => setNewPassword(e.target.value)}
-                    handleBlur={handleOnBlur}
-                    handleFocus={handleOnFocus}
-                    errorMessage={formErrors.newPassword}
-                    floatingLabel={formatMessage(messages['new.password.label'])}
-                  />
-                  <PasswordField
-                    name="confirmPassword"
-                    value={confirmPassword}
-                    handleChange={handleConfirmPasswordChange}
-                    handleFocus={handleOnFocus}
-                    errorMessage={formErrors.confirmPassword}
-                    showRequirements={false}
-                    floatingLabel={formatMessage(messages['confirm.password.label'])}
-                  />
-                  <StatefulButton
-                    id="submit-new-password"
-                    name="submit-new-password"
-                    type="submit"
-                    variant="brand"
-                    className="reset-password--button"
-                    state={props.status}
-                    labels={{
-                      default: formatMessage(messages['reset.password']),
-                      pending: '',
-                    }}
-                    onClick={e => handleSubmit(e)}
-                    onMouseDown={(e) => e.preventDefault()}
-                  />
-                </Form>
-              </div>
-            </div>
+    <div className="custom-reset-password-container">
+      <Helmet>
+        <title>
+          {formatMessage(messages['reset.password.page.title'], { siteName: getConfig().SITE_NAME })}
+        </title>
+      </Helmet>
+      <div className="reset-password-form-wrapper">
+        <div className="reset-password-form-container">
+          {/* Back Button */}
+          <div className="back-button-container">
+            <button
+              type="button"
+              className="back-button"
+              onClick={() => navigate(updatePathWithQueryParams(LOGIN_PAGE))}
+            >
+              <Icon src={ArrowBack} />
+            </button>
           </div>
-        </BaseContainer>
-      </PluginSlot>
+
+          {/* Main Form */}
+          <Form id="set-reset-password-form" name="set-reset-password-form" className="reset-password-form">
+            <ResetPasswordFailure errorCode={errorCode} errorMsg={props.errorMsg} />
+            <h2 className="reset-password-title">
+              {formatMessage(messages['reset.password'])}
+            </h2>
+            <p className="reset-password-instructions">
+              {formatMessage(messages['reset.password.page.instructions'])}
+            </p>
+
+            <PasswordField
+              name="newPassword"
+              value={newPassword}
+              handleChange={(e) => setNewPassword(e.target.value)}
+              handleBlur={handleOnBlur}
+              handleFocus={handleOnFocus}
+              errorMessage={formErrors.newPassword}
+              floatingLabel={formatMessage(messages['new.password.label'])}
+              placeholder="Enter new password"
+            />
+
+            <PasswordField
+              name="confirmPassword"
+              value={confirmPassword}
+              handleChange={handleConfirmPasswordChange}
+              handleFocus={handleOnFocus}
+              errorMessage={formErrors.confirmPassword}
+              showRequirements={false}
+              floatingLabel={formatMessage(messages['confirm.password.label'])}
+              placeholder="Confirm new password"
+            />
+
+            <StatefulButton
+              id="submit-new-password"
+              name="submit-new-password"
+              type="submit"
+              variant="brand"
+              className="reset-password--button"
+              state={props.status}
+              labels={{
+                default: formatMessage(messages['reset.password']),
+                pending: '',
+              }}
+              onClick={handleSubmit}
+              onMouseDown={(e) => e.preventDefault()}
+            />
+          </Form>
+        </div>
+        </div>
+      </div>
     );
   }
   return null;
 };
 
-ResetPasswordPage.defaultProps = {
+CustomResetPasswordPage.defaultProps = {
   status: null,
   token: null,
   errorMsg: null,
 };
 
-ResetPasswordPage.propTypes = {
+CustomResetPasswordPage.propTypes = {
   resetPassword: PropTypes.func.isRequired,
   validateToken: PropTypes.func.isRequired,
   token: PropTypes.string,
@@ -237,4 +227,5 @@ export default connect(
     resetPassword,
     validateToken,
   },
-)(ResetPasswordPage);
+)(CustomResetPasswordPage);
+
