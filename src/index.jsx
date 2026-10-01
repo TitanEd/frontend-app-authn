@@ -12,6 +12,8 @@ import { createRoot } from 'react-dom/client';
 import configuration from './config';
 import messages from './i18n';
 import MainApp from './MainApp';
+import 'titaned-lib/dist/index.css';
+import './styles/styles-overrides.scss';
 
 subscribe(APP_READY, () => {
   const root = createRoot(document.getElementById('root'));

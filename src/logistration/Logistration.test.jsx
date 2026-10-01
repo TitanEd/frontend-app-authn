@@ -228,7 +228,7 @@ describe('Logistration', () => {
     rerender(renderWrapper(<Logistration {...props} />));
 
     // verifying register button
-    expect(screen.getByRole('button', { name: 'Create an account for free' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Sign Up' })).toBeDefined();
   });
 
   it('should render only login page when public account creation is disabled', () => {
