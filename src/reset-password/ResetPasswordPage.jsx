@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { getConfig } from '@edx/frontend-platform';
 import { useIntl } from '@edx/frontend-platform/i18n';
+import { PluginSlot } from '@openedx/frontend-plugin-framework';
 import {
   Form,
   Icon,
@@ -88,7 +89,9 @@ const ResetPasswordPageInner = () => {
       };
       errorMessage = await validatePassword(payload);
     } catch (err) {
+      // If validation fails, keep errorMessage empty to allow form submission
       errorMessage = '';
+      console.error('Password validation error:', err);
     }
     setFormErrors({ ...formErrors, newPassword: errorMessage });
   };
@@ -103,7 +106,7 @@ const ResetPasswordPageInner = () => {
         }
         break;
       case 'confirmPassword':
-        if (!value) {
+        if (value === '') {
           formErrors.confirmPassword = formatMessage(messages['confirm.your.password']);
         } else if (value !== newPassword) {
           formErrors.confirmPassword = formatMessage(messages['passwords.do.not.match']);
@@ -188,59 +191,69 @@ const ResetPasswordPageInner = () => {
   }
 
   return (
-    <BaseContainer>
-      <div>
-        <Helmet>
-          <title>
-            {formatMessage(messages['reset.password.page.title'], { siteName: getConfig().SITE_NAME })}
-          </title>
-        </Helmet>
-        <Tabs activeKey="" id="controlled-tab" onSelect={(key) => navigate(updatePathWithQueryParams(key))}>
-          <Tab title={tabTitle} eventKey={LOGIN_PAGE} />
-        </Tabs>
-        <div id="main-content" className="main-content">
-          <div className="mw-xs">
-            <ResetPasswordFailure errorCode={errorCode} errorMsg={errorMsg} />
-            <h4>{formatMessage(messages['reset.password'])}</h4>
-            <p className="mb-4">{formatMessage(messages['reset.password.page.instructions'])}</p>
-            <Form id="set-reset-password-form" name="set-reset-password-form">
-              <PasswordField
-                name="newPassword"
-                value={newPassword}
-                handleChange={(e) => setNewPassword(e.target.value)}
-                handleBlur={handleOnBlur}
-                handleFocus={handleOnFocus}
-                errorMessage={formErrors.newPassword}
-                floatingLabel={formatMessage(messages['new.password.label'])}
-              />
-              <PasswordField
-                name="confirmPassword"
-                value={confirmPassword}
-                handleChange={handleConfirmPasswordChange}
-                handleFocus={handleOnFocus}
-                errorMessage={formErrors.confirmPassword}
-                showRequirements={false}
-                floatingLabel={formatMessage(messages['confirm.password.label'])}
-              />
-              <StatefulButton
-                id="submit-new-password"
-                name="submit-new-password"
-                type="submit"
-                variant="brand"
-                className="reset-password--button"
-                state={isResetting ? 'pending' : 'default'}
-                labels={{
-                  default: formatMessage(messages['reset.password']),
-                  pending: '',
-                }}
-                onClick={e => handleSubmit(e)}
-                onMouseDown={(e) => e.preventDefault()}
-              />
-            </Form>
+    <PluginSlot
+      id="reset_password_plugin_slot"
+      pluginProps={{
+        token: validatedToken || token,
+        status,
+        errorMsg,
+        errorCode,
+      }}
+    >
+      <BaseContainer>
+        <div>
+          <Helmet>
+            <title>
+              {formatMessage(messages['reset.password.page.title'], { siteName: getConfig().SITE_NAME })}
+            </title>
+          </Helmet>
+          <Tabs activeKey="" id="controlled-tab" onSelect={(key) => navigate(updatePathWithQueryParams(key))}>
+            <Tab title={tabTitle} eventKey={LOGIN_PAGE} />
+          </Tabs>
+          <div id="main-content" className="main-content">
+            <div className="mw-xs">
+              <ResetPasswordFailure errorCode={errorCode} errorMsg={errorMsg} />
+              <h4>{formatMessage(messages['reset.password'])}</h4>
+              <p className="mb-4">{formatMessage(messages['reset.password.page.instructions'])}</p>
+              <Form id="set-reset-password-form" name="set-reset-password-form">
+                <PasswordField
+                  name="newPassword"
+                  value={newPassword}
+                  handleChange={(e) => setNewPassword(e.target.value)}
+                  handleBlur={handleOnBlur}
+                  handleFocus={handleOnFocus}
+                  errorMessage={formErrors.newPassword}
+                  floatingLabel={formatMessage(messages['new.password.label'])}
+                />
+                <PasswordField
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  handleChange={handleConfirmPasswordChange}
+                  handleFocus={handleOnFocus}
+                  errorMessage={formErrors.confirmPassword}
+                  showRequirements={false}
+                  floatingLabel={formatMessage(messages['confirm.password.label'])}
+                />
+                <StatefulButton
+                  id="submit-new-password"
+                  name="submit-new-password"
+                  type="submit"
+                  variant="brand"
+                  className="reset-password--button"
+                  state={isResetting ? 'pending' : 'default'}
+                  labels={{
+                    default: formatMessage(messages['reset.password']),
+                    pending: '',
+                  }}
+                  onClick={e => handleSubmit(e)}
+                  onMouseDown={(e) => e.preventDefault()}
+                />
+              </Form>
+            </div>
           </div>
         </div>
-      </div>
-    </BaseContainer>
+      </BaseContainer>
+    </PluginSlot>
   );
 };
 

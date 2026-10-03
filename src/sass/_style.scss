@@ -6,7 +6,10 @@
 @import "_progressive_profiling_page.scss";
 @import "_login_page.scss";
 @import "_forgot_password.scss";
+@import "../forgot-password/CustomForgotPassword.scss";
+@import "../reset-password/CustomResetPassword.scss";
 @import "_recommendations_card_base.scss";
+@import "../logistration/CustomLogistration.scss";
 //
 // ----------------------------
 // #COLORS
@@ -304,7 +307,9 @@ select.form-control {
 
 #password-requirement-top {
   font-size: var(--pgn-typography-font-size-xs) !important;
-  filter: drop-shadow(var(--pgn-elevation-box-shadow-level-2)) drop-shadow(var(--pgn-elevation-box-shadow-level-2)) !important;
+  // --pgn-elevation-box-shadow-level-2 is a comma-separated list, which drop-shadow() rejects
+  // (the whole filter was dropped); use the value tels/sumac.1 compiled to.
+  filter: drop-shadow(0 0.125rem 0.25rem rgba(0, 0, 0, 0.15)) drop-shadow(0 0.125rem 0.25rem rgba(0, 0, 0, 0.15)) !important;
   opacity: 1;
   width: 90%;
   bottom: 10px !important;
@@ -401,7 +406,7 @@ select.form-control {
   }
 
   .tpa-skeleton {
-    min-width: 464px !important;
+    min-width: 464px;
   }
 }
 
@@ -430,7 +435,6 @@ select.form-control {
   .welcome-page-content,
   .main-content {
     min-width: 100vw !important;
-    padding: 1.5rem !important;
   }
 
   #password-requirement-top {

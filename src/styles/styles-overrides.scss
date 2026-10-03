@@ -1,0 +1,33 @@
+.btn-brand {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-white) !important;
+    border-radius: 8px;
+
+    &:hover {
+        background-color: var(--primary-hover) !important;
+        border-color: var(--primary-hover) !important;
+        color: var(--primary-alt) !important;
+    }
+}
+
+.registration-form {
+    form {
+        .pgn__form-text-invalid {
+            color: var(--danger) !important;
+        }
+    }
+}
+
+.username-suggestions {
+    margin-top: 0 !important;
+}
+
+.username-suggestions__close__button {
+    color: var(--primary) !important;
+
+    &:hover {
+        background-color: var(--primary) !important;
+        color: var(--text-white) !important;
+    }
+}

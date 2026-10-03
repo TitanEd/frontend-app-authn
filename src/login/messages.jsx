@@ -54,6 +54,13 @@ const messages = defineMessages({
                     + 'Thank you for helping us keep your data safe.',
     description: 'Error message for non-compliant password',
   },
+  // Added by Mahendra for blocked account error message starts here
+  'account.blocked.message': {
+    id: 'account.blocked.message',
+    defaultMessage: 'Your account has been blocked. Please contact administrator.',
+    description: 'Message for when user account has been blocked',
+  },
+  // Added by Mahendra for blocked account error message ends here
   'account.locked.out.message.1': {
     id: 'account.locked.out.message.1',
     defaultMessage: 'To protect your account, it\'s been temporarily locked. Try again in 30 minutes.',

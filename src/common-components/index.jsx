@@ -8,5 +8,7 @@ export { default as ThirdPartyAuthAlert } from './ThirdPartyAuthAlert';
 export { default as InstitutionLogistration } from './InstitutionLogistration';
 export { RenderInstitutionButton } from './InstitutionLogistration';
 export { default as FormGroup } from './FormGroup';
+export { default as CustomFormGroup } from './CustomFormGroup';
 export { default as PasswordField } from './PasswordField';
+export { default as CustomPasswordField } from './CustomPasswordField';
 export { default as Zendesk } from './Zendesk';

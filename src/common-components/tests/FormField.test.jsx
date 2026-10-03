@@ -26,7 +26,7 @@ describe('FormGroup', () => {
   };
 
   it('should show help text on field focus', () => {
-    const { queryByText, getByLabelText } = render(<FormGroup {...props} />);
+    const { queryByText, getByLabelText } = render(<IntlProvider locale="en"><FormGroup {...props} /></IntlProvider>);
     const emailInput = getByLabelText('Email');
 
     expect(queryByText('Email field help text')).toBeNull();

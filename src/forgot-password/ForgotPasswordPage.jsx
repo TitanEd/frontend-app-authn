@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
 import { useIntl } from '@edx/frontend-platform/i18n';
+import { PluginSlot } from '@openedx/frontend-plugin-framework';
 import {
   Form,
   Hyperlink,
@@ -107,72 +108,82 @@ const ForgotPasswordPage = () => {
   );
 
   return (
-    <BaseContainer>
-      <Helmet>
-        <title>{formatMessage(messages['forgot.password.page.title'],
-          { siteName: getConfig().SITE_NAME })}
-        </title>
-      </Helmet>
-      <div>
-        <Tabs activeKey="" id="controlled-tab" onSelect={(key) => navigate(updatePathWithQueryParams(key))}>
-          <Tab title={tabTitle} eventKey={LOGIN_PAGE} />
-        </Tabs>
-        <div id="main-content" className="main-content">
-          <Form id="forget-password-form" name="forget-password-form" className="mw-xs">
-            <ForgotPasswordAlert email={bannerEmail} emailError={formErrors} status={status} />
-            <h2 className="h4">
-              {formatMessage(messages['forgot.password.page.heading'])}
-            </h2>
-            <p className="mb-4">
-              {formatMessage(messages['forgot.password.page.instructions'])}
-            </p>
-            <FormGroup
-              floatingLabel={formatMessage(messages['forgot.password.page.email.field.label'])}
-              name="email"
-              value={email}
-              autoComplete="on"
-              errorMessage={validationError}
-              handleChange={(e) => setEmail(e.target.value)}
-              handleBlur={handleBlur}
-              handleFocus={handleFocus}
-              helpText={[formatMessage(messages['forgot.password.email.help.text'], { platformName })]}
-            />
-            <StatefulButton
-              id="submit-forget-password"
-              name="submit-forget-password"
-              type="submit"
-              variant="brand"
-              className="forgot-password--button"
-              state={submitState}
-              labels={{
-                default: formatMessage(messages['forgot.password.page.submit.button']),
-                pending: '',
-              }}
-              onClick={handleSubmit}
-              onMouseDown={(e) => e.preventDefault()}
-            />
-            {(getConfig().LOGIN_ISSUE_SUPPORT_LINK) && (
-              <Hyperlink
-                id="forgot-password"
-                name="forgot-password"
-                className="ml-4 font-weight-500 text-body"
-                destination={getConfig().LOGIN_ISSUE_SUPPORT_LINK}
-                target="_blank"
-                showLaunchIcon={false}
-              >
-                {formatMessage(messages['need.help.sign.in.text'])}
-              </Hyperlink>
-            )}
-            <p className="mt-5.5 small text-gray-700">
-              {formatMessage(messages['additional.help.text'], { platformName })}
-              <span className="mx-1">
-                <Hyperlink isInline destination={`mailto:${getConfig().INFO_EMAIL}`}>{getConfig().INFO_EMAIL}</Hyperlink>
-              </span>
-            </p>
-          </Form>
+    <PluginSlot
+      id="forgot_password_plugin_slot"
+      pluginProps={{
+        email,
+        emailValidationError: validationError,
+        status,
+        submitState,
+      }}
+    >
+      <BaseContainer>
+        <Helmet>
+          <title>{formatMessage(messages['forgot.password.page.title'],
+            { siteName: getConfig().SITE_NAME })}
+          </title>
+        </Helmet>
+        <div>
+          <Tabs activeKey="" id="controlled-tab" onSelect={(key) => navigate(updatePathWithQueryParams(key))}>
+            <Tab title={tabTitle} eventKey={LOGIN_PAGE} />
+          </Tabs>
+          <div id="main-content" className="main-content">
+            <Form id="forget-password-form" name="forget-password-form" className="mw-xs">
+              <ForgotPasswordAlert email={bannerEmail} emailError={formErrors} status={status} />
+              <h2 className="h4">
+                {formatMessage(messages['forgot.password.page.heading'])}
+              </h2>
+              <p className="mb-4">
+                {formatMessage(messages['forgot.password.page.instructions'])}
+              </p>
+              <FormGroup
+                floatingLabel={formatMessage(messages['forgot.password.page.email.field.label'])}
+                name="email"
+                value={email}
+                autoComplete="on"
+                errorMessage={validationError}
+                handleChange={(e) => setEmail(e.target.value)}
+                handleBlur={handleBlur}
+                handleFocus={handleFocus}
+                helpText={[formatMessage(messages['forgot.password.email.help.text'], { platformName })]}
+              />
+              <StatefulButton
+                id="submit-forget-password"
+                name="submit-forget-password"
+                type="submit"
+                variant="brand"
+                className="forgot-password--button"
+                state={submitState}
+                labels={{
+                  default: formatMessage(messages['forgot.password.page.submit.button']),
+                  pending: '',
+                }}
+                onClick={handleSubmit}
+                onMouseDown={(e) => e.preventDefault()}
+              />
+              {(getConfig().LOGIN_ISSUE_SUPPORT_LINK) && (
+                <Hyperlink
+                  id="forgot-password"
+                  name="forgot-password"
+                  className="ml-4 font-weight-500 text-body"
+                  destination={getConfig().LOGIN_ISSUE_SUPPORT_LINK}
+                  target="_blank"
+                  showLaunchIcon={false}
+                >
+                  {formatMessage(messages['need.help.sign.in.text'])}
+                </Hyperlink>
+              )}
+              <p className="mt-5.5 small text-gray-700">
+                {formatMessage(messages['additional.help.text'], { platformName })}
+                <span className="mx-1">
+                  <Hyperlink isInline destination={`mailto:${getConfig().INFO_EMAIL}`}>{getConfig().INFO_EMAIL}</Hyperlink>
+                </span>
+              </p>
+            </Form>
+          </div>
         </div>
-      </div>
-    </BaseContainer>
+      </BaseContainer>
+    </PluginSlot>
   );
 };
 

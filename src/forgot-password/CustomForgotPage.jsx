@@ -1,0 +1,241 @@
+import React, { useEffect, useState } from 'react';
+
+import { getConfig } from '@edx/frontend-platform';
+import { sendPageEvent, sendTrackEvent } from '@edx/frontend-platform/analytics';
+import { useIntl } from '@edx/frontend-platform/i18n';
+import {
+  Form,
+  Hyperlink,
+  Icon,
+  StatefulButton,
+  Tab,
+  Tabs,
+} from '@openedx/paragon';
+import { ArrowBack, KeyboardBackspace } from '@openedx/paragon/icons';
+import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { useForgotPassword } from './data/apiHook';
+import ForgotPasswordAlert from './ForgotPasswordAlert';
+import messages from './messages';
+import { FormGroup } from '../common-components';
+import {
+  DEFAULT_STATE, INTERNAL_SERVER_ERROR, LOGIN_PAGE, PENDING_STATE, VALID_EMAIL_REGEX,
+} from '../data/constants';
+import { updatePathWithQueryParams, windowScrollTo } from '../data/utils';
+
+const CustomForgotPage = (props) => {
+  const platformName = getConfig().SITE_NAME;
+  const emailRegex = new RegExp(VALID_EMAIL_REGEX, 'i');
+  const {
+    status, submitState, emailValidationError,
+  } = props;
+
+  const { formatMessage } = useIntl();
+  const [email, setEmail] = useState(props.email);
+  const [bannerEmail, setBannerEmail] = useState('');
+  const [formErrors, setFormErrors] = useState('');
+  const [validationError, setValidationError] = useState(emailValidationError);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    sendPageEvent('login_and_registration', 'reset');
+    sendTrackEvent('edx.bi.password_reset_form.viewed', { category: 'user-engagement' });
+  }, []);
+
+  useEffect(() => {
+    setValidationError(emailValidationError);
+  }, [emailValidationError]);
+
+  useEffect(() => {
+    if (status === 'complete') {
+      setEmail('');
+    }
+  }, [status]);
+
+  const getValidationMessage = (value) => {
+    let error = '';
+
+    if (value === '') {
+      error = formatMessage(messages['forgot.password.empty.email.field.error']);
+    } else if (!emailRegex.test(value)) {
+      error = formatMessage(messages['forgot.password.page.invalid.email.message']);
+    }
+
+    return error;
+  };
+
+  const handleBlur = () => {
+    props.setForgotPasswordFormData({ email, emailValidationError: getValidationMessage(email) });
+  };
+
+  const handleFocus = () => props.setForgotPasswordFormData({ emailValidationError: '' });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setBannerEmail(email);
+
+    const error = getValidationMessage(email);
+    if (error) {
+      setFormErrors(error);
+      props.setForgotPasswordFormData({ email, emailValidationError: error });
+      windowScrollTo({ left: 0, top: 0, behavior: 'smooth' });
+    } else {
+      props.forgotPassword(email);
+    }
+  };
+
+  const tabTitle = (
+    <div className="d-inline-flex flex-wrap align-items-center">
+      <Icon src={KeyboardBackspace} />
+      <span className="ml-2">{formatMessage(messages['sign.in.text'])}</span>
+    </div>
+  );
+
+  return (
+    <div className="custom-forgot-password-container">
+      <Helmet>
+        <title>{formatMessage(messages['forgot.password.page.title'],
+          { siteName: getConfig().SITE_NAME })}
+        </title>
+      </Helmet>
+      <div className="forgot-password-form-wrapper">
+        <div className="forgot-password-form-container">
+          {/* Back Button */}
+          <div className="back-button-container">
+            <button 
+              type="button" 
+              className="back-button"
+              onClick={() => navigate(updatePathWithQueryParams(LOGIN_PAGE))}
+            >
+              <Icon src={ArrowBack} />
+            </button>
+          </div>
+          
+          {/* Main Form */}
+          <Form id="forget-password-form" name="forget-password-form" className="forgot-password-form">
+            <ForgotPasswordAlert email={bannerEmail} emailError={formErrors} status={status} />
+            <h2 className="forgot-password-title">
+              Forgot Password?
+            </h2>
+            <p className="forgot-password-instructions">
+              Please enter your email address below and we will send you an email with instructions on how to reset your password.
+            </p>
+            <FormGroup
+              floatingLabel="Registered Email"
+              name="email"
+              value={email}
+              autoComplete="on"
+              errorMessage={validationError}
+              handleChange={(e) => setEmail(e.target.value)}
+              handleBlur={handleBlur}
+              handleFocus={handleFocus}
+              helpText={[formatMessage(messages['forgot.password.email.help.text'], { platformName })]}
+            />
+            <StatefulButton
+              id="submit-forget-password"
+              name="submit-forget-password"
+              type="submit"
+              variant="brand"
+              className="forgot-password--button"
+              state={submitState}
+              labels={{
+                default: "Submit",
+                pending: '',
+              }}
+              onClick={handleSubmit}
+              onMouseDown={(e) => e.preventDefault()}
+            />
+            {(getConfig().LOGIN_ISSUE_SUPPORT_LINK) && (
+              <div className="help-section">
+                <span className="help-text">Having Trouble? </span>
+                <Hyperlink
+                  id="forgot-password"
+                  name="forgot-password"
+                  className="help-link"
+                  destination={getConfig().LOGIN_ISSUE_SUPPORT_LINK}
+                  target="_blank"
+                  showLaunchIcon={false}
+                >
+                  Get Help
+                </Hyperlink>
+              </div>
+            )}
+            <p className="support-info">
+              {formatMessage(messages['additional.help.text'], { platformName })}{' '}
+              <span>
+                <Hyperlink isInline destination={`mailto:${getConfig().INFO_EMAIL}`}>{getConfig().INFO_EMAIL}</Hyperlink>
+              </span>
+            </p>
+          </Form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+CustomForgotPage.propTypes = {
+  email: PropTypes.string,
+  emailValidationError: PropTypes.string,
+  forgotPassword: PropTypes.func.isRequired,
+  setForgotPasswordFormData: PropTypes.func.isRequired,
+  status: PropTypes.string,
+  submitState: PropTypes.string,
+};
+
+CustomForgotPage.defaultProps = {
+  email: '',
+  emailValidationError: '',
+  status: null,
+  submitState: DEFAULT_STATE,
+};
+
+/**
+ * Replaces the redux `connect` used on sumac (verawood removed redux). Supplies the same props
+ * the forgot password reducer/saga provided, backed by the React Query hook.
+ */
+const ConnectedCustomForgotPage = (props) => {
+  const location = useLocation();
+  const [forgotPasswordState, setForgotPasswordState] = React.useState({
+    status: location.state?.status || props.status || '',
+    // after a reset-link failure sumac's reducer kept only `status`, leaving submitState to the default prop
+    submitState: location.state?.status ? undefined : '',
+    email: props.email || '',
+    emailValidationError: props.emailValidationError || '',
+  });
+  const { mutate: sendForgotPassword } = useForgotPassword();
+
+  const forgotPasswordAction = (email) => {
+    setForgotPasswordState(state => ({ email: state.email, status: 'pending', submitState: PENDING_STATE }));
+    sendForgotPassword(email, {
+      onSuccess: () => {
+        setForgotPasswordState({
+          status: 'complete', submitState: '', email: '', emailValidationError: '',
+        });
+      },
+      onError: (error) => {
+        if (error.response && error.response.status === 403) {
+          setForgotPasswordState(state => ({ email: state.email, status: 'forbidden' }));
+        } else {
+          setForgotPasswordState(state => ({ email: state.email, status: INTERNAL_SERVER_ERROR }));
+        }
+      },
+    });
+  };
+
+  const setForgotPasswordFormDataAction = (forgotPasswordFormData) => {
+    setForgotPasswordState(state => ({ ...state, ...forgotPasswordFormData }));
+  };
+
+  return (
+    <CustomForgotPage
+      {...props}
+      {...forgotPasswordState}
+      forgotPassword={forgotPasswordAction}
+      setForgotPasswordFormData={setForgotPasswordFormDataAction}
+    />
+  );
+};
+
+export default ConnectedCustomForgotPage;

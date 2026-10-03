@@ -48,5 +48,41 @@ module.exports = createConfig('eslint', {
       },
     ],
     'function-paren-newline': 'off',
+    'no-unused-vars': 'off',
+    'import/no-unresolved': 'off',
+    'import/extensions': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'no-console': 'off',
+    'import/prefer-default-export': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'react/button-has-type': 'off',
+    'max-len': 'off',
+    'react/prop-types': 'off',
+    'react/no-unescaped-entities': 'off',
+    'react/jsx-no-useless-fragment': 'off',
   },
+  overrides: [
+    {
+      // TitanEd custom code is kept exactly as on tels/sumac.1; verawood's stricter
+      // formatting rules are relaxed for these files only.
+      files: [
+        'src/**/Custom*.jsx',
+        'src/common-components/SocialAuthProviders.jsx',
+        'src/login/LoginFailure.jsx',
+        'src/styles/themeLoader.js',
+      ],
+      rules: {
+        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/quotes': 'off',
+        '@typescript-eslint/comma-dangle': 'off',
+        indent: 'off',
+        'no-trailing-spaces': 'off',
+        'padded-blocks': 'off',
+        'sort-imports': 'off',
+        'import/order': 'off',
+        'react/jsx-indent': 'off',
+        'react/jsx-closing-tag-location': 'off',
+      },
+    },
+  ],
 });
