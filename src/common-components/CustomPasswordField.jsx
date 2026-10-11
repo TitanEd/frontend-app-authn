@@ -145,7 +145,7 @@ const CustomPasswordField = (props) => {
           controlClassName={props.borderClass}
           trailingElement={isPasswordHidden ? ShowButton : HideButton}
           isInvalid={props.errorMessage !== ''}
-          placeholder={props.placeholder}
+          placeholder={(props.placeholder && props.placeholder.trim()) || props.floatingLabel}
         />
       </OverlayTrigger>
       {props.helpText && props.helpText.length > 0 && (

@@ -21,7 +21,6 @@ import {
   NUDGE_PASSWORD_CHANGE,
   REQUIRE_PASSWORD_CHANGE,
   TPA_AUTHENTICATION_FAILURE,
-  ACCOUNT_BLOCKED
 } from './data/constants';
 import messages from './messages';
 import { windowScrollTo } from '../data/utils';
@@ -153,16 +152,6 @@ const LoginFailureMessage = (props) => {
       );
       break;
     }
-    // Added by Mahendra for blocked account error message starts here
-    case ACCOUNT_BLOCKED: {
-      errorMessage = (
-        <>
-          <p>{formatMessage(messages['account.blocked.message'])}</p>
-        </>
-      );
-      break;
-    }
-    // Added by Mahendra for blocked account error message ends here
     case INCORRECT_EMAIL_PASSWORD:
       if (context.failureCount <= 1) {
         errorMessage = <p>{formatMessage(messages['login.incorrect.credentials.error'])}</p>;

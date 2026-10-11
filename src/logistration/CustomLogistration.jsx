@@ -35,13 +35,17 @@ import AccountActivationMessage from '../login/AccountActivationMessage';
 import { useLoginContext } from '../login/components/LoginContext';
 import { useLogin } from '../login/data/apiHook';
 import { INVALID_FORM, TPA_AUTHENTICATION_FAILURE } from '../login/data/constants';
-import LoginFailureMessage from '../login/LoginFailure';
+import LoginFailureMessage from '../login/CustomLoginFailure';
 import loginMessages from '../login/messages';
+import customMessages from './customMessages';
 import { RegistrationPage } from '../register';
 import ResetPasswordSuccess from '../reset-password/ResetPasswordSuccess';
 import { Helmet } from 'react-helmet';
+import useCustomAuthnUi from '../common-components/useCustomAuthnUi';
+import './CustomLogistration.scss';
 
 const CustomLogistration = (props) => {
+  useCustomAuthnUi();
   const {
     selectedPage,
     tpaProviders,
@@ -293,7 +297,7 @@ const CustomLogistration = (props) => {
     <div className="custom-logistration-container">
 
       <Helmet>
-        <title>{formatMessage(messages['login.page.title'], { siteName: getConfig().SITE_NAME })}</title>
+        <title>{formatMessage(loginMessages['login.page.title'], { siteName: getConfig().SITE_NAME })}</title>
       </Helmet>
 
       { key && (
@@ -323,11 +327,11 @@ const CustomLogistration = (props) => {
                 {/* Logo and Heading at the top when social login is enabled */}
                 <div className="logo-section">
                   <div className="titan-logo">
-                    <img src={logoUrl} alt="TitanEd Logo" />
+                    <img src={logoUrl} alt={formatMessage(customMessages.logoAlt, { siteName: getConfig().SITE_NAME })} />
                   </div>
                 </div>
 
-                <h2 className="main-heading mt-2">Log In To Your Account</h2>
+                <h2 className="main-heading mt-2">{formatMessage(customMessages.loginHeading)}</h2>
 
                 {/* Login Form Wrapper */}
                 <div className="login-form-wrapper">
@@ -348,12 +352,12 @@ const CustomLogistration = (props) => {
 
                   {/* Divider */}
                   <div className="divider">
-                    <span className="divider-text">Or</span>
+                    <span className="divider-text">{formatMessage(customMessages.or)}</span>
                   </div>
 
                   {/* Right Section - Traditional Login */}
                   <div className="traditional-login-section">
-                    <h3 className="section-heading mb-4">Please Enter Your Details</h3>
+                    <h3 className="section-heading mb-4">{formatMessage(customMessages.enterDetails)}</h3>
 
                     {/* Error Messages and Success Banner */}
                     <div className="mb-4">
@@ -380,8 +384,8 @@ const CustomLogistration = (props) => {
                         handleChange={handleOnChange}
                         handleFocus={handleOnFocus}
                         errorMessage={errors.emailOrUsername}
-                        floatingLabel="Email or Username"
-                        placeholder="Example@titaned.com"
+                        floatingLabel={formatMessage(customMessages.emailOrUsernameLabel)}
+                        placeholder={formatMessage(customMessages.emailOrUsernamePlaceholder)}
                       />
 
                       <PasswordField
@@ -393,8 +397,8 @@ const CustomLogistration = (props) => {
                         handleChange={handleOnChange}
                         handleFocus={handleOnFocus}
                         errorMessage={errors.password}
-                        floatingLabel="Password"
-                        placeholder="Enter password"
+                        floatingLabel={formatMessage(customMessages.passwordLabel)}
+                        placeholder={formatMessage(customMessages.passwordPlaceholder)}
                       />
 
                       <StatefulButton
@@ -405,7 +409,7 @@ const CustomLogistration = (props) => {
                         className="login-btn w-100 mb-4"
                         state={submitState}
                         labels={{
-                          default: 'Login',
+                          default: formatMessage(customMessages.loginButton),
                           pending: '',
                         }}
                         onClick={handleSubmit}
@@ -419,18 +423,18 @@ const CustomLogistration = (props) => {
                         to={updatePathWithQueryParams(RESET_PAGE)}
                         onClick={trackForgotPasswordLinkClick}
                       >
-                        Forgot password?
+                        {formatMessage(customMessages.forgotPassword)}
                       </Link>
 
                       {enablePublicSignup && (
                         <div className="text-center mt-4">
-                          <span className="signup-text">Don't Have An Account? </span>
+                          <span className="signup-text">{formatMessage(customMessages.noAccount)} </span>
                           <Button
                             variant="link"
                             className="signup-link"
                             onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
                           >
-                            Sign Up
+                            {formatMessage(customMessages.signUp)}
                           </Button>
                         </div>
                       )}
@@ -444,15 +448,15 @@ const CustomLogistration = (props) => {
                 {/* Logo and Heading */}
                 <div className="logo-section mb-4">
                   <div className="titan-logo">
-                    <img src={logoUrl} alt="TitanEd Logo" />
+                    <img src={logoUrl} alt={formatMessage(customMessages.logoAlt, { siteName: getConfig().SITE_NAME })} />
                   </div>
                 </div>
 
-                <h2 className="main-heading mb-4">Log In To Your Account</h2>
+                <h2 className="main-heading mb-4">{formatMessage(customMessages.loginHeading)}</h2>
 
                 {/* Form Container */}
                 <div className="login-form-container">
-                  <h3 className="section-heading mb-4">Please Enter Your Details</h3>
+                  <h3 className="section-heading mb-4">{formatMessage(customMessages.enterDetails)}</h3>
 
                   {/* Error Messages and Success Banner */}
                   <div className="mb-4">
@@ -479,8 +483,8 @@ const CustomLogistration = (props) => {
                       handleChange={handleOnChange}
                       handleFocus={handleOnFocus}
                       errorMessage={errors.emailOrUsername}
-                      floatingLabel="Email or Username"
-                      placeholder="Example@titaned.com"
+                      floatingLabel={formatMessage(customMessages.emailOrUsernameLabel)}
+                      placeholder={formatMessage(customMessages.emailOrUsernamePlaceholder)}
                     />
 
                     <PasswordField
@@ -492,8 +496,8 @@ const CustomLogistration = (props) => {
                       handleChange={handleOnChange}
                       handleFocus={handleOnFocus}
                       errorMessage={errors.password}
-                      floatingLabel="Password"
-                      placeholder="Enter password"
+                      floatingLabel={formatMessage(customMessages.passwordLabel)}
+                      placeholder={formatMessage(customMessages.passwordPlaceholder)}
                     />
 
                     <StatefulButton
@@ -504,7 +508,7 @@ const CustomLogistration = (props) => {
                       className="login-btn w-100 mb-4"
                       state={submitState}
                       labels={{
-                        default: 'Login',
+                        default: formatMessage(customMessages.loginButton),
                         pending: '',
                       }}
                       onClick={handleSubmit}
@@ -518,18 +522,18 @@ const CustomLogistration = (props) => {
                       to={updatePathWithQueryParams(RESET_PAGE)}
                       onClick={trackForgotPasswordLinkClick}
                     >
-                      Forgot password?
+                      {formatMessage(customMessages.forgotPassword)}
                     </Link>
 
                     {enablePublicSignup && (
                       <div className="text-center mt-4">
-                        <span className="signup-text">Don't Have An Account? </span>
+                        <span className="signup-text">{formatMessage(customMessages.noAccount)} </span>
                         <Button
                           variant="link"
                           className="signup-link"
                           onClick={() => handleOnSelect(REGISTER_PAGE, selectedPage)}
                         >
-                          Sign Up
+                          {formatMessage(customMessages.signUp)}
                         </Button>
                       </div>
                     )}
@@ -547,11 +551,11 @@ const CustomLogistration = (props) => {
                 {/* Logo and Heading at the top when social login is enabled */}
                 <div className="logo-section">
                   <div className="titan-logo">
-                    <img src={logoUrl} alt="TitanEd Logo" />
+                    <img src={logoUrl} alt={formatMessage(customMessages.logoAlt, { siteName: getConfig().SITE_NAME })} />
                   </div>
                 </div>
 
-                <h2 className="main-heading">Create An Account</h2>
+                <h2 className="main-heading">{formatMessage(customMessages.registerHeading)}</h2>
 
                 {/* Registration Form Wrapper */}
                 <div className="registration-form-wrapper">
@@ -572,12 +576,12 @@ const CustomLogistration = (props) => {
 
                   {/* Divider */}
                   <div className="divider">
-                    <span className="divider-text">Or</span>
+                    <span className="divider-text">{formatMessage(customMessages.or)}</span>
                   </div>
 
                   {/* Right Section - Traditional Registration Form */}
                   <div className="traditional-login-section">
-                    <h3 className="section-heading mb-4">Please Enter Your Details</h3>
+                    <h3 className="section-heading mb-4">{formatMessage(customMessages.enterDetails)}</h3>
 
                     <div className="registration-form">
                       <RegistrationPage
@@ -587,13 +591,13 @@ const CustomLogistration = (props) => {
 
                       {/* Already Have Account Link */}
                       <div className="text-center mt-4">
-                        <span className="signup-text">Already Have An Account? </span>
+                        <span className="signup-text">{formatMessage(customMessages.haveAccount)} </span>
                         <Button
                           variant="link"
                           className="signup-link"
                           onClick={() => handleOnSelect(LOGIN_PAGE, selectedPage)}
                         >
-                          Login
+                          {formatMessage(customMessages.loginButton)}
                         </Button>
                       </div>
                     </div>
@@ -606,15 +610,15 @@ const CustomLogistration = (props) => {
                 {/* Logo and Heading */}
                 <div className="logo-section mb-4">
                   <div className="titan-logo">
-                    <img src={logoUrl} alt="TitanEd Logo" />
+                    <img src={logoUrl} alt={formatMessage(customMessages.logoAlt, { siteName: getConfig().SITE_NAME })} />
                   </div>
                 </div>
 
-                <h2 className="main-heading mb-4">Create An Account</h2>
+                <h2 className="main-heading mb-4">{formatMessage(customMessages.registerHeading)}</h2>
 
                 {/* Form Container */}
                 <div className="registration-form-container">
-                  <h3 className="section-heading mb-4">Please Enter Your Details</h3>
+                  <h3 className="section-heading mb-4">{formatMessage(customMessages.enterDetails)}</h3>
 
                   <div className="registration-form">
                     <RegistrationPage
@@ -624,13 +628,13 @@ const CustomLogistration = (props) => {
 
                     {/* Already Have Account Link */}
                     <div className="text-center mt-4">
-                      <span className="signup-text">Already Have An Account? </span>
+                      <span className="signup-text">{formatMessage(customMessages.haveAccount)} </span>
                       <Button
                         variant="link"
                         className="signup-link"
                         onClick={() => handleOnSelect(LOGIN_PAGE, selectedPage)}
                       >
-                        Login
+                        {formatMessage(customMessages.loginButton)}
                       </Button>
                     </div>
                   </div>
@@ -710,11 +714,6 @@ CustomLogistration.defaultProps = {
   },
 };
 
-/**
- * Replaces the redux `connect` used on sumac (verawood removed redux). Supplies the same props
- * mapStateToProps and the login/third-party-auth reducers and sagas provided, backed by
- * verawood's contexts and React Query hooks.
- */
 const ConnectedCustomLogistration = (props) => {
   const location = useLocation();
   const {

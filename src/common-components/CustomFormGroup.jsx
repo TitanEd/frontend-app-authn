@@ -43,7 +43,7 @@ const CustomFormGroup = (props) => {
         controlClassName={props.borderClass}
         trailingElement={props.trailingElement}
         isInvalid={props.errorMessage !== ''}
-        placeholder={props.placeholder}
+        placeholder={(props.placeholder && props.placeholder.trim()) || props.floatingLabel}
       >
         {props.options ? props.options() : null}
       </Form.Control>

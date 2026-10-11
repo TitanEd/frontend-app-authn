@@ -19,13 +19,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useForgotPassword } from './data/apiHook';
 import ForgotPasswordAlert from './ForgotPasswordAlert';
 import messages from './messages';
+import customMessages from './customMessages';
 import { FormGroup } from '../common-components';
 import {
   DEFAULT_STATE, INTERNAL_SERVER_ERROR, LOGIN_PAGE, PENDING_STATE, VALID_EMAIL_REGEX,
 } from '../data/constants';
 import { updatePathWithQueryParams, windowScrollTo } from '../data/utils';
+import useCustomAuthnUi from '../common-components/useCustomAuthnUi';
+import './CustomForgotPassword.scss';
 
 const CustomForgotPage = (props) => {
+  useCustomAuthnUi();
   const platformName = getConfig().SITE_NAME;
   const emailRegex = new RegExp(VALID_EMAIL_REGEX, 'i');
   const {
@@ -117,13 +121,13 @@ const CustomForgotPage = (props) => {
           <Form id="forget-password-form" name="forget-password-form" className="forgot-password-form">
             <ForgotPasswordAlert email={bannerEmail} emailError={formErrors} status={status} />
             <h2 className="forgot-password-title">
-              Forgot Password?
+              {formatMessage(customMessages.heading)}
             </h2>
             <p className="forgot-password-instructions">
-              Please enter your email address below and we will send you an email with instructions on how to reset your password.
+              {formatMessage(messages['forgot.password.page.instructions'])}
             </p>
             <FormGroup
-              floatingLabel="Registered Email"
+              floatingLabel={formatMessage(customMessages.emailLabel)}
               name="email"
               value={email}
               autoComplete="on"
@@ -141,7 +145,7 @@ const CustomForgotPage = (props) => {
               className="forgot-password--button"
               state={submitState}
               labels={{
-                default: "Submit",
+                default: formatMessage(messages['forgot.password.page.submit.button']),
                 pending: '',
               }}
               onClick={handleSubmit}
@@ -149,7 +153,7 @@ const CustomForgotPage = (props) => {
             />
             {(getConfig().LOGIN_ISSUE_SUPPORT_LINK) && (
               <div className="help-section">
-                <span className="help-text">Having Trouble? </span>
+                <span className="help-text">{formatMessage(customMessages.havingTrouble)} </span>
                 <Hyperlink
                   id="forgot-password"
                   name="forgot-password"
@@ -158,7 +162,7 @@ const CustomForgotPage = (props) => {
                   target="_blank"
                   showLaunchIcon={false}
                 >
-                  Get Help
+                  {formatMessage(customMessages.getHelp)}
                 </Hyperlink>
               </div>
             )}
@@ -191,10 +195,6 @@ CustomForgotPage.defaultProps = {
   submitState: DEFAULT_STATE,
 };
 
-/**
- * Replaces the redux `connect` used on sumac (verawood removed redux). Supplies the same props
- * the forgot password reducer/saga provided, backed by the React Query hook.
- */
 const ConnectedCustomForgotPage = (props) => {
   const location = useLocation();
   const [forgotPasswordState, setForgotPasswordState] = React.useState({
