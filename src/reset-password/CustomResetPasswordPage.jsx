@@ -19,14 +19,18 @@ import {
   FORM_SUBMISSION_ERROR, PASSWORD_RESET, PASSWORD_RESET_ERROR, PASSWORD_VALIDATION_ERROR, TOKEN_STATE,
 } from './data/constants';
 import messages from './messages';
+import customMessages from './customMessages';
 import ResetPasswordFailure from './ResetPasswordFailure';
 import { PasswordField } from '../common-components';
 import {
   LETTER_REGEX, LOGIN_PAGE, NUMBER_REGEX, RESET_PAGE,
 } from '../data/constants';
 import { getAllPossibleQueryParams, updatePathWithQueryParams, windowScrollTo } from '../data/utils';
+import useCustomAuthnUi from '../common-components/useCustomAuthnUi';
+import './CustomResetPassword.scss';
 
 const CustomResetPasswordPage = (props) => {
+  useCustomAuthnUi();
   const { formatMessage } = useIntl();
   const newPasswordError = formatMessage(messages['password.validation.message']);
 
@@ -168,7 +172,7 @@ const CustomResetPasswordPage = (props) => {
               handleFocus={handleOnFocus}
               errorMessage={formErrors.newPassword}
               floatingLabel={formatMessage(messages['new.password.label'])}
-              placeholder="Enter new password"
+              placeholder={formatMessage(customMessages.newPasswordPlaceholder)}
             />
 
             <PasswordField
@@ -179,7 +183,7 @@ const CustomResetPasswordPage = (props) => {
               errorMessage={formErrors.confirmPassword}
               showRequirements={false}
               floatingLabel={formatMessage(messages['confirm.password.label'])}
-              placeholder="Confirm new password"
+              placeholder={formatMessage(customMessages.confirmPasswordPlaceholder)}
             />
 
             <StatefulButton
@@ -219,10 +223,6 @@ CustomResetPasswordPage.propTypes = {
   errorMsg: PropTypes.string,
 };
 
-/**
- * Replaces the redux `connect` used on sumac (verawood removed redux). Supplies the same props
- * the reset password reducer/saga provided, backed by the React Query hooks.
- */
 const ConnectedCustomResetPasswordPage = (props) => {
   const [resetPasswordState, setResetPasswordState] = React.useState({
     status: props.status || TOKEN_STATE.PENDING,

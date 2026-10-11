@@ -89,9 +89,7 @@ const ResetPasswordPageInner = () => {
       };
       errorMessage = await validatePassword(payload);
     } catch (err) {
-      // If validation fails, keep errorMessage empty to allow form submission
       errorMessage = '';
-      console.error('Password validation error:', err);
     }
     setFormErrors({ ...formErrors, newPassword: errorMessage });
   };
@@ -106,7 +104,7 @@ const ResetPasswordPageInner = () => {
         }
         break;
       case 'confirmPassword':
-        if (value === '') {
+        if (!value) {
           formErrors.confirmPassword = formatMessage(messages['confirm.your.password']);
         } else if (value !== newPassword) {
           formErrors.confirmPassword = formatMessage(messages['passwords.do.not.match']);

@@ -1,15 +1,18 @@
+import React from 'react';
 import { PLUGIN_OPERATIONS, DIRECT_PLUGIN } from "@openedx/frontend-plugin-framework";
 import CustomLogistration from "./src/logistration/CustomLogistration";
 import CustomForgotPage from "./src/forgot-password/CustomForgotPage";
 import CustomResetPasswordPage from "./src/reset-password/CustomResetPasswordPage";
 import CustomPasswordField from "./src/common-components/CustomPasswordField";
 import CustomFormGroup from "./src/common-components/CustomFormGroup";
+import CustomSocialAuthProviders from "./src/common-components/CustomSocialAuthProviders";
 
 
 const config = {
     ...process.env,
     pluginSlots: {
         logistration_plugin_slot: {
+            keepDefault: false,
             plugins: [
                 {
                     op: PLUGIN_OPERATIONS.Insert,
@@ -25,6 +28,7 @@ const config = {
             ]
         },
         forgot_password_plugin_slot: {
+            keepDefault: false,
             plugins: [
                 {
                     op: PLUGIN_OPERATIONS.Insert,
@@ -40,6 +44,7 @@ const config = {
             ]
         },
         reset_password_plugin_slot: {
+            keepDefault: false,
             plugins: [
                 {
                     op: PLUGIN_OPERATIONS.Insert,
@@ -55,6 +60,7 @@ const config = {
             ]
         },
         password_field_plugin_slot: {
+            keepDefault: false,
             plugins: [
                 {
                     op: PLUGIN_OPERATIONS.Insert,
@@ -70,6 +76,7 @@ const config = {
             ]
         },
         form_group_plugin_slot: {
+            keepDefault: false,
             plugins: [
                 {
                     op: PLUGIN_OPERATIONS.Insert,
@@ -79,6 +86,22 @@ const config = {
                         priority: 1,
                         RenderWidget: (props) => (
                             <CustomFormGroup {...props} />
+                        )
+                    }
+                }
+            ]
+        },
+        social_auth_providers_plugin_slot: {
+            keepDefault: false,
+            plugins: [
+                {
+                    op: PLUGIN_OPERATIONS.Insert,
+                    widget: {
+                        id: "social_auth_providers_plugin_slot",
+                        type: DIRECT_PLUGIN,
+                        priority: 1,
+                        RenderWidget: (props) => (
+                            <CustomSocialAuthProviders {...props} />
                         )
                     }
                 }

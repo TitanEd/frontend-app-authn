@@ -1,8 +1,7 @@
-import React from 'react';
-
 import { getConfig } from '@edx/frontend-platform';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { PluginSlot } from '@openedx/frontend-plugin-framework';
 import { Icon } from '@openedx/paragon';
 import { Login } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
@@ -26,7 +25,7 @@ const SocialAuthProviders = (props) => {
       id={provider.id}
       key={provider.id}
       type="button"
-      className={`btn-social btn-${provider.id}`}
+      className={`btn-social btn-${provider.id} ${index % 2 === 0 ? 'mr-3' : ''}`}
       data-provider-url={referrer === LOGIN_PAGE ? provider.loginUrl : provider.registerUrl}
       onClick={handleSubmit}
     >
@@ -44,7 +43,7 @@ const SocialAuthProviders = (props) => {
               )}
           </div>
         )}
-      <span id="provider-name" className="notranslate pl-2" aria-hidden="true">{provider.name}</span>
+      <span id="provider-name" className="notranslate mr-auto pl-2" aria-hidden="true">{provider.name}</span>
       <span className="sr-only">
         {referrer === LOGIN_PAGE
           ? formatMessage(messages['sso.sign.in.with'], { providerName: provider.name })
@@ -53,8 +52,18 @@ const SocialAuthProviders = (props) => {
     </button>
   ));
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{socialAuth}</>;
+  return (
+    <PluginSlot
+      id="social_auth_providers_plugin_slot"
+      pluginProps={{
+        referrer,
+        socialAuthProviders,
+      }}
+    >
+      {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
+      <>{socialAuth}</>
+    </PluginSlot>
+  );
 };
 
 SocialAuthProviders.defaultProps = {

@@ -63,7 +63,6 @@ module.exports = createConfig('eslint', {
   },
   overrides: [
     {
-      // TitanEd custom code is kept exactly as on tels/sumac.1; verawood's stricter
       // formatting rules are relaxed for these files only.
       files: [
         'src/**/Custom*.jsx',

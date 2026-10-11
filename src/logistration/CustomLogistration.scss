@@ -6,26 +6,26 @@
 }
 
 .navigation-tabs {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--pgn-color-light-400);
   
   .nav-tabs {
     border-bottom: none;
     
     .nav-link {
       border: none;
-      color: #6c757d;
+      color: var(--pgn-color-text-muted);
       font-weight: 500;
       padding: 1rem 2rem;
       
       &.active {
-        color: #007bff;
-        border-bottom: 3px solid #007bff;
+        color: var(--pgn-color-primary-base);
+        border-bottom: 3px solid var(--pgn-color-primary-base);
         background: none;
       }
       
       &:hover {
         border: none;
-        color: #007bff;
+        color: var(--pgn-color-primary-base);
       }
     }
   }
@@ -103,11 +103,11 @@
       }
       
       .titan-text {
-        color: #6c757d;
+        color: var(--pgn-color-text-muted);
       }
       
       .ed-text {
-        color: #dc3545;
+        color: var(--pgn-color-danger-base);
       }
     }
   }
@@ -216,11 +216,11 @@
       }
       
       .titan-text {
-        color: #6c757d;
+        color: var(--pgn-color-text-muted);
       }
       
       .ed-text {
-        color: #dc3545;
+        color: var(--pgn-color-danger-base);
       }
     }
   }
@@ -423,11 +423,11 @@
       }
       
       .titan-text {
-        color: #6c757d;
+        color: var(--pgn-color-text-muted);
       }
       
       .ed-text {
-        color: #dc3545;
+        color: var(--pgn-color-danger-base);
       }
     }
   }
@@ -625,4 +625,59 @@
       }
     }
   }
+}
+
+// The custom page already shows the provider buttons on the left
+// (.social-login-section). The stock RegistrationPage also renders
+// ThirdPartyAuth ("Or register with:" + buttons) inside its form — hide that
+// copy here instead of editing the stock component (tels/sumac.1 hid it via
+// .registration-social-login-section, a wrapper it added to the core file).
+.login-split-layout form[name="registration-form"] {
+  > .mt-4.mb-3.h4,
+  > .row.m-0:has(.btn-social),
+  > .mt-4:has(.tpa-skeleton),
+  > .btn-link:has(.institute-icon) {
+    display: none !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Page frame: no empty tinted band above the card, compact vertical rhythm,
+// and the page fits the viewport (no needless scroll) on normal screens.
+.custom-logistration-container {
+  padding-top: var(--pgn-spacing-spacer-3) !important;
+  padding-bottom: var(--pgn-spacing-spacer-3) !important;
+
+  > .main-content {
+    padding-top: 0 !important;
+    background-color: transparent !important;
+  }
+}
+
+.login-split-layout {
+  min-height: 0 !important;
+  padding: var(--pgn-spacing-spacer-4) var(--pgn-spacing-spacer-5) !important;
+  // Space between logo / heading / form rows; columns keep their gap.
+  row-gap: var(--pgn-spacing-spacer-3) !important;
+
+  .main-heading {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .section-heading {
+    margin-bottom: var(--pgn-spacing-spacer-3) !important;
+  }
+}
+
+.login-centered-layout {
+  min-height: 0 !important;
+  margin-top: 0 !important;
+  padding: var(--pgn-spacing-spacer-4) var(--pgn-spacing-spacer-5) !important;
+}
+
+// Logo keeps its own row: the old -4rem pull relied on the 3rem grid gap.
+.login-split-layout .logo-section .titan-logo,
+.login-centered-layout .logo-section .titan-logo {
+  margin-bottom: 0 !important;
 }
