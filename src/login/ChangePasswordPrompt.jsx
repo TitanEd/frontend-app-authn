@@ -39,7 +39,7 @@ const ChangePasswordPrompt = ({ variant, redirectUrl }) => {
 
   return (
     <ModalDialog
-      title="Password security"
+      title={formatMessage(messages['password.security.nudge.title'])}
       isOpen={isOpen}
       onClose={close}
       size={isMobileView ? 'sm' : 'md'}

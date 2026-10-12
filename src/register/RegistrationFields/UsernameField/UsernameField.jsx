@@ -136,11 +136,11 @@ const UsernameField = (props) => {
 
   if (usernameSuggestions.length > 0 && errorMessage && value === ' ') {
     className = 'username-suggestions';
-    iconButton = <IconButton src={Close} iconAs={Icon} alt="Close" onClick={() => handleUsernameSuggestionClose()} variant="black" size="sm" className="username-suggestions__close__button" />;
+    iconButton = <IconButton src={Close} iconAs={Icon} alt={formatMessage(messages['registration.username.suggestion.close.label'])} onClick={() => handleUsernameSuggestionClose()} variant="black" size="sm" className="username-suggestions__close__button" />;
     suggestedUsernameDiv = suggestedUsernames();
   } else if (usernameSuggestions.length > 0 && value === ' ') {
     className = 'username-suggestions d-flex align-items-center';
-    iconButton = <IconButton src={Close} iconAs={Icon} alt="Close" onClick={() => handleUsernameSuggestionClose()} variant="black" size="sm" className="username-suggestions__close__button" />;
+    iconButton = <IconButton src={Close} iconAs={Icon} alt={formatMessage(messages['registration.username.suggestion.close.label'])} onClick={() => handleUsernameSuggestionClose()} variant="black" size="sm" className="username-suggestions__close__button" />;
     suggestedUsernameDiv = suggestedUsernames();
   } else if (usernameSuggestions.length > 0 && errorMessage) {
     suggestedUsernameDiv = suggestedUsernames();

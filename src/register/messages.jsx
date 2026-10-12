@@ -201,6 +201,11 @@ const messages = defineMessages({
     description: 'Text for the hyperlink that redirects user to the terms of service',
   },
   // miscellaneous strings
+  'registration.username.suggestion.close.label': {
+    id: 'registration.username.suggestion.close.label',
+    defaultMessage: 'Close',
+    description: 'Label of the button that closes the suggested usernames.',
+  },
   'registration.username.suggestion.label': {
     id: 'registration.username.suggestion.label',
     defaultMessage: 'Suggested:',
