@@ -14,7 +14,7 @@ import {
 import PropTypes from 'prop-types';
 import Skeleton from 'react-loading-skeleton';
 import {
-  Link, Navigate, useLocation, useNavigate,
+  Link, useLocation, useNavigate,
 } from 'react-router-dom';
 
 import { FormGroup, PasswordField, RedirectLogistration } from '../common-components';
@@ -41,7 +41,8 @@ import customMessages from './customMessages';
 import { RegistrationPage } from '../register';
 import ResetPasswordSuccess from '../reset-password/ResetPasswordSuccess';
 import { Helmet } from 'react-helmet';
-import useCustomAuthnUi from '../common-components/useCustomAuthnUi';
+import useCustomAuthnUi, { authTransition, themedLogoUrl } from '../common-components/useCustomAuthnUi';
+import AuthBrandPanel from '../common-components/AuthBrandPanel';
 import './CustomLogistration.scss';
 
 const CustomLogistration = (props) => {
@@ -77,7 +78,6 @@ const CustomLogistration = (props) => {
   const activationMsgType = getActivationStatus();
   const queryParams = useMemo(() => getAllPossibleQueryParams(), []);
 
-  const [key, setKey] = useState('');
   const [formFields, setFormFields] = useState({ ...backedUpFormData.formFields });
   const [errorCode, setErrorCode] = useState({ type: '', count: 0, context: {} });
   const [errors, setErrors] = useState({ ...backedUpFormData.errors });
@@ -86,7 +86,7 @@ const CustomLogistration = (props) => {
   const disablePublicAccountCreation = getConfig().ALLOW_PUBLIC_ACCOUNT_CREATION === false;
   const hideRegistrationLink = getConfig().SHOW_REGISTRATION_LINKS === false;
 
-  const logoUrl = getConfig().LOGO_URL;
+  const logoUrl = themedLogoUrl();
 
   useEffect(() => {
     const authService = getAuthService();
@@ -184,7 +184,11 @@ const CustomLogistration = (props) => {
     } else if (tabKey === REGISTER_PAGE) {
       props.backupLoginForm();
     }
-    setKey(tabKey);
+    // Animated page change (sign up is "forward", back to sign in is "back").
+    authTransition(
+      () => navigate(updatePathWithQueryParams(tabKey), { replace: true }),
+      tabKey === REGISTER_PAGE ? 'forward' : 'back',
+    );
   };
 
   const validateFormFields = (payload) => {
@@ -236,8 +240,12 @@ const CustomLogistration = (props) => {
     setErrors(prevErrors => ({ ...prevErrors, [name]: '' }));
   };
 
-  const trackForgotPasswordLinkClick = () => {
+  const trackForgotPasswordLinkClick = (event) => {
     sendTrackEvent('edx.bi.password-reset_form.toggled', { category: 'user-engagement' });
+    if (event && !event.metaKey && !event.ctrlKey && !event.shiftKey && event.button === 0) {
+      event.preventDefault();
+      authTransition(() => navigate(updatePathWithQueryParams(RESET_PAGE)), 'forward');
+    }
   };
 
   const isValidTpaHint = () => {
@@ -295,14 +303,11 @@ const CustomLogistration = (props) => {
 
   return (
     <div className="custom-logistration-container">
+      <AuthBrandPanel page={selectedPage === LOGIN_PAGE ? 'login' : 'register'} />
 
       <Helmet>
         <title>{formatMessage(loginMessages['login.page.title'], { siteName: getConfig().SITE_NAME })}</title>
       </Helmet>
-
-      { key && (
-        <Navigate to={updatePathWithQueryParams(key)} replace />
-      )}
 
       {/* Main Content */}
       <div className="main-content">

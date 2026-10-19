@@ -26,7 +26,8 @@ import {
   LETTER_REGEX, LOGIN_PAGE, NUMBER_REGEX, RESET_PAGE,
 } from '../data/constants';
 import { getAllPossibleQueryParams, updatePathWithQueryParams, windowScrollTo } from '../data/utils';
-import useCustomAuthnUi from '../common-components/useCustomAuthnUi';
+import useCustomAuthnUi, { authTransition } from '../common-components/useCustomAuthnUi';
+import AuthBrandPanel from '../common-components/AuthBrandPanel';
 import './CustomResetPassword.scss';
 
 const CustomResetPasswordPage = (props) => {
@@ -136,6 +137,7 @@ const CustomResetPasswordPage = (props) => {
   } else {
     return (
     <div className="custom-reset-password-container">
+      <AuthBrandPanel page="reset" />
       <Helmet>
         <title>
           {formatMessage(messages['reset.password.page.title'], { siteName: getConfig().SITE_NAME })}
@@ -148,7 +150,8 @@ const CustomResetPasswordPage = (props) => {
             <button
               type="button"
               className="back-button"
-              onClick={() => navigate(updatePathWithQueryParams(LOGIN_PAGE))}
+              aria-label={formatMessage(messages['sign.in'])}
+              onClick={() => authTransition(() => navigate(updatePathWithQueryParams(LOGIN_PAGE)), 'back')}
             >
               <Icon src={ArrowBack} />
             </button>

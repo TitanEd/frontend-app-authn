@@ -25,7 +25,8 @@ import {
   DEFAULT_STATE, INTERNAL_SERVER_ERROR, LOGIN_PAGE, PENDING_STATE, VALID_EMAIL_REGEX,
 } from '../data/constants';
 import { updatePathWithQueryParams, windowScrollTo } from '../data/utils';
-import useCustomAuthnUi from '../common-components/useCustomAuthnUi';
+import useCustomAuthnUi, { authTransition } from '../common-components/useCustomAuthnUi';
+import AuthBrandPanel from '../common-components/AuthBrandPanel';
 import './CustomForgotPassword.scss';
 
 const CustomForgotPage = (props) => {
@@ -99,6 +100,7 @@ const CustomForgotPage = (props) => {
 
   return (
     <div className="custom-forgot-password-container">
+      <AuthBrandPanel page="reset" />
       <Helmet>
         <title>{formatMessage(messages['forgot.password.page.title'],
           { siteName: getConfig().SITE_NAME })}
@@ -111,7 +113,8 @@ const CustomForgotPage = (props) => {
             <button 
               type="button" 
               className="back-button"
-              onClick={() => navigate(updatePathWithQueryParams(LOGIN_PAGE))}
+              aria-label={formatMessage(messages['sign.in.text'])}
+              onClick={() => authTransition(() => navigate(updatePathWithQueryParams(LOGIN_PAGE)), 'back')}
             >
               <Icon src={ArrowBack} />
             </button>
