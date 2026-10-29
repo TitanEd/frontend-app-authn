@@ -19,16 +19,120 @@
     }
 }
 
-.username-suggestions {
-    margin-top: 0 !important;
+// Username suggestions (sign-up, after the full name): upstream lays them over the whole field
+// (label, input and help text) in a fixed 20rem scroll strip, which overflowed the two-column form
+// with a scroll bar and the close button on top of a chip. Here they are a row under the field:
+// the chips wrap, nothing scrolls, text stays at 1rem.
+// Labels as blocks: inside the username column below a label is a flex item (a block), while the
+// other fields' inline-block labels sat 3px lower on their line; this keeps the row aligned.
+#registration-form .pgn__form-label {
+    display: block;
+}
+
+.username__form-group-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    // The field's own parts become items of this column, so the suggestions sit right under the
+    // input. While they show, the help text gives way (it comes back once a name is picked).
+    &:has(> .username-suggestions) {
+        > .pgn__form-group {
+            display: contents;
+        }
+
+        .pgn__form-text-default {
+            display: none !important;
+        }
+
+        .pgn__form-text {
+            order: 3;
+        }
+    }
+}
+
+.username__form-group-wrapper > .username-suggestions {
+    position: relative !important;
+    order: 2;
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem 0.5rem;
+    margin-top: 0.5rem !important;
+    padding: 0.5rem 2.75rem 0.5rem 0.75rem;
+    border: 1px solid var(--pgn-color-border);
+    border-radius: var(--pgn-size-border-radius-base, 0.375rem);
+    background-color: var(--pgn-color-light-200);
+
+    .username-suggestion--label {
+        margin: 0;
+        color: var(--pgn-color-text-muted, var(--pgn-color-gray-500)) !important;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .username-scroll-suggested--form-field {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        width: auto !important;
+        min-width: 0;
+        overflow: visible;
+        white-space: normal;
+    }
+
+    // button.btn…: the brand's outline-button states (button.btn.btn-outline-dark:hover…) are !important.
+    button.btn.username-suggestions--chip {
+        margin: 0;
+        padding: 0.0625rem 0.625rem;
+        border: 1px solid var(--pgn-color-border) !important;
+        border-radius: 999px;
+        background-color: var(--pgn-color-bg-base) !important;
+        box-shadow: none !important;
+        color: var(--pgn-color-text-base) !important;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+
+        &:hover:not(:disabled),
+        &:focus:not(:disabled) {
+            border-color: var(--pgn-color-primary-base) !important;
+            background-color: var(--pgn-color-primary-light, var(--pgn-color-bg-base)) !important;
+            color: var(--pgn-color-primary-base) !important;
+        }
+
+        &:active:not(:disabled) {
+            border-color: var(--pgn-color-primary-base) !important;
+            background-color: var(--pgn-color-primary-base) !important;
+            color: var(--pgn-color-text-inverse, #fff) !important;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--pgn-color-primary-base);
+            outline-offset: 2px;
+        }
+    }
 }
 
 .username-suggestions__close__button {
-    color: var(--primary) !important;
+    position: absolute !important;
+    inset-block-start: 0.375rem;
+    inset-inline-end: 0.375rem;
 
-    &:hover {
-        background-color: var(--primary) !important;
-        color: var(--pgn-color-white) !important;
+    [dir="rtl"] & {
+        right: auto;
+    }
+    color: var(--pgn-color-text-muted, var(--pgn-color-gray-500)) !important;
+
+    &:hover,
+    &:focus {
+        background-color: var(--pgn-color-light-300) !important;
+        color: var(--pgn-color-text-base) !important;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--pgn-color-primary-base);
+        outline-offset: 2px;
     }
 }
 
